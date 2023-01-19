@@ -1,0 +1,22 @@
+name: Run Software Composition Analysis Checks
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  run-sca:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Installing modules
+      run: yarn
+
+    - name: Running SCA
+      run: yarn sca 

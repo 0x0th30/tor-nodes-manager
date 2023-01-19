@@ -1,0 +1,22 @@
+name: Build Application
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Installing modules
+      run: yarn install
+    
+    - name: Building project
+      run: yarn build

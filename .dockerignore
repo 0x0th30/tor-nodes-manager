@@ -1,0 +1,8 @@
+*
+
+!src/
+!config/
+!prisma/
+!tsconfig.json
+!package.json
+!babel.config.js
