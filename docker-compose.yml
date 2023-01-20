@@ -3,3 +3,14 @@ services:
     build: .
     ports:
       - 3000:3000
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    env_file:
+      - config/mongo.env
