@@ -39,7 +39,7 @@
       "@data-access/*": ["src/data-access/*"],
       "@services/*": ["src/services/*"],
       "@contracts/*": ["src/contracts/*"],
-      "@entities/*": ["src/entities/*"],
+      "@entities/*": ["src/contracts/*"],
       "@errors/*": ["src/errors/*"],
       "@types/*": ["src/types/*"],
       "@mocks/*": ["tests/mocks/*"],
