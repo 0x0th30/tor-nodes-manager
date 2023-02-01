@@ -1,13 +1,41 @@
 import { Request, Response } from 'express';
 import { Middleware, APIResponse } from '@contracts/middleware';
+import { BanIp, BanIpRequest, BanIpResponse } from '@use-cases/ban-ip';
+import { logger } from '@loaders/logger';
 
 class BanIpMiddleware implements Middleware {
-  public action(request: Request, response: Response): Promise<APIResponse> {
-    const  = {}
-    if (!request.body.address) {
+  public async action(request: Request, response: Response) {
+    logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
+    const responseContent: APIResponse = { success: false };
 
-      response.status(400).json({ success: false, message: 'Missing "address" field in request!' });
+    logger.info('Checking request body...');
+    if (!request.body.address) {
+      responseContent.success = false;
+      responseContent.message = 'Missing "address" field in request body!';
+
+      logger.error(responseContent.message);
+      return response.status(400).json(responseContent);
     }
+
+    const { address } = request.body;
+
+    const banIp = new BanIp();
+    const banIpRequest: BanIpRequest = { address };
+    const banIpResponse: BanIpResponse = await banIp.execute(banIpRequest);
+
+    if (!banIpResponse.success) {
+      responseContent.success = false;
+      responseContent.message = banIpResponse.message;
+
+      logger.error(responseContent.message);
+      return response.status(500).json(responseContent);
+    }
+
+    responseContent.success = true;
+    responseContent.data = { bannedIp: address };
+
+    logger.info('Request was successfully responded.');
+    return response.status(200).json(responseContent);
   }
 }
 

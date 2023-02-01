@@ -37,7 +37,7 @@
       "@config/*": ["src/config/*"],
       "@loaders/*": ["src/loaders/*"],
       "@data-access/*": ["src/data-access/*"],
-      "@services/*": ["src/services/*"],
+      "@use-cases/*": ["src/use-cases/*"],
       "@contracts/*": ["src/contracts/*"],
       "@entities/*": ["src/contracts/*"],
       "@errors/*": ["src/errors/*"],

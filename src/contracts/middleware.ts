@@ -7,7 +7,7 @@ interface APIResponse {
 }
 
 interface Middleware {
-  action(request: Request, response: Response, next?: NextFunction): Promise<APIResponse>,
+  action(request: Request, response: Response, next?: NextFunction): Promise<Response>,
 }
 
 export { Middleware, APIResponse };

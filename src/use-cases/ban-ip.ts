@@ -17,19 +17,22 @@ class BanIp {
 
     const response: BanIpResponse = { success: false };
 
-    logger.info(`Inserting ip ${request.address} in primary base...`);
-    await BannedIp.create({ address: request.address })
-      .catch((error: Error) => {
-        logger.error(`Ip insertion failed by ${error}!`);
+    logger.info(`Inserting IP ${request.address} in primary base...`);
 
-        response.success = false;
-        response.message = error.message;
-      })
-      .then(() => {
-        response.success = true;
-        response.data = { address: request.address };
-      });
+    try {
+      await BannedIp.create({ address: request.address });
+      logger.info('The IP was successfully included.');
 
+      response.success = true;
+      response.data = { address: request.address };
+    } catch (error: any) {
+      logger.error(`IP insertion failed by ${error}!`);
+
+      response.success = false;
+      response.message = error.message;
+    }
+
+    logger.info('Finishing "ban-ip" use-case/service.');
     return response;
   }
 }
