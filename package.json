@@ -26,6 +26,7 @@
     "@types/express": "^4.17.15",
     "@types/mongoose": "^5.11.97",
     "express": "^4.18.2",
+    "moment": "^2.29.4",
     "mongoose": "^6.8.4",
     "winston": "^3.8.2"
   },
@@ -36,8 +37,8 @@
     "test": "jest --verbose",
     "test:silent": "jest --silent --verbose",
     "start:prisma": "prisma generate && prisma migrate deploy",
-    "start:dev": "yarn start:prisma && ts-node-dev -r tsconfig-paths/register src/app.ts",
-    "start:prod": "yarn start:prisma && node dist/app.js",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
+    "start:prod": "node dist/app.js",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored"
   }
 }
