@@ -10,7 +10,6 @@ FROM node:16-alpine
 USER node
 ENV NODE_ENV=prod
 COPY --from=builder --chown=node:node /app/package.json /app/
-COPY --from=builder --chown=node:node /app/prisma /app/
 WORKDIR /app
 EXPOSE 3000
 RUN yarn install --production=true
