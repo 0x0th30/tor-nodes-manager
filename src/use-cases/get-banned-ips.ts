@@ -1,3 +1,4 @@
+import { Error } from 'mongoose'
 import { BannedIp } from '@data-access/database-manager';
 import { logger } from '@loaders/logger';
 
@@ -24,14 +25,21 @@ class GetBannedIps {
       response.success = true;
       response.data = { addresses };
     } catch (error: any) {
-      logger.error(`Banned IPs searching was failed by ${error}!`);
-
       response.success = false;
       response.message = error.message;
     }
 
     logger.info('Finishing "get-banned-ips" use-cases/services.');
     return response;
+  }
+
+  private handleError(error: Error) {
+    if (error instanceof Error.MongooseServerSelectionError) {
+      return 'Cannot connect with the specified URI! Please report this issue.';
+    }
+    if (error instanceof Error.DocumentNotFoundError) {
+      return 'The specified document does not exists! Please report this issue.';
+    }
   }
 }
 
