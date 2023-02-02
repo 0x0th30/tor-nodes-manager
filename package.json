@@ -40,5 +40,6 @@
     "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
     "start:prod": "node dist/app.js",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored"
-  }
+  },
+  "version": "0.0.0"
 }
