@@ -13,7 +13,7 @@ class BanIpMiddleware implements Middleware {
       responseContent.success = false;
       responseContent.message = 'Missing "address" field in request body!';
 
-      logger.error(responseContent.message);
+      logger.error('Bad Request. Returning status code 400!');
       return response.status(400).json(responseContent);
     }
 
@@ -27,15 +27,15 @@ class BanIpMiddleware implements Middleware {
       responseContent.success = false;
       responseContent.message = banIpResponse.message;
 
-      logger.error(responseContent.message);
+      logger.error('Internal Server Error. Returning status code 500!');
       return response.status(500).json(responseContent);
     }
 
     responseContent.success = true;
     responseContent.data = { bannedIp: address };
 
-    logger.info('Request was successfully responded.');
-    return response.status(200).json(responseContent);
+    logger.info('Request was successfully responded!');
+    return response.status(201).json(responseContent);
   }
 }
 
