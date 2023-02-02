@@ -1,6 +1,8 @@
 import { mongoose } from '@loaders/mongo';
 
-const bannedIpSchema = new mongoose.Schema({ address: String });
+const bannedIpSchema = new mongoose.Schema({
+  address: { type: String, unique: true, required: true },
+});
 
 const BannedIp = mongoose.model('BannedIp', bannedIpSchema);
 
