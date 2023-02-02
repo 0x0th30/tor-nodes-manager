@@ -18,7 +18,7 @@ class GetBannedIps {
     try {
       const bannedIps = await BannedIp.find({});
       const addresses: string[] = [];
-      bannedIps.forEach((ip) => addresses.push(ip.address!));
+      bannedIps.forEach((ip) => addresses.push(ip.address));
       logger.info('Banned IPs was successfully found.');
 
       response.success = true;
