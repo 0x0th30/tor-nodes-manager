@@ -22,7 +22,7 @@ class GetBannedIpsMiddleware implements Middleware {
     responseContent.success = true;
     responseContent.data = { bannedIps: getBannedIpsResponse.data?.addresses };
 
-    logger.info('Request was successfully responded!');
+    logger.info('Request was successfully responded. Returning status code 200!');
     return response.status(200).json(responseContent);
   }
 }

@@ -34,7 +34,7 @@ class BanIpMiddleware implements Middleware {
     responseContent.success = true;
     responseContent.data = { bannedIp: address };
 
-    logger.info('Request was successfully responded!');
+    logger.info('Request was successfully responded. Returning status code 201!');
     return response.status(201).json(responseContent);
   }
 }
