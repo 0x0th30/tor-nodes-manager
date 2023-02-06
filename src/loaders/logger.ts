@@ -1,5 +1,7 @@
 import moment from 'moment';
-import { createLogger, format, transports } from 'winston';
+import {
+  createLogger, config, format, transports,
+} from 'winston';
 import { reset, dim } from '@utils/ansi-style-codes';
 
 const logTemplate = format.printf(({
@@ -11,7 +13,7 @@ const logTemplate = format.printf(({
 });
 
 export const logger = createLogger({
-  level: 'info',
+  levels: config.syslog.levels,
   format: format.combine(
     format.timestamp(),
     format.colorize(),
