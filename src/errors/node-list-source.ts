@@ -4,8 +4,6 @@ import { ApplicationError } from '@errors/application';
 abstract class NodeListSourceError extends ApplicationError {}
 
 export class UnexpectedResponse extends NodeListSourceError {
-  private a: any;
-
   constructor(status: number, message: string) {
     super();
     super.name = this.constructor.name;

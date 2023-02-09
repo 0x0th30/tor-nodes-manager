@@ -1,13 +1,15 @@
 import axios from 'axios';
+import * as axiosErrorCodes from '@utils/axios-error-codes';
 import { NodeListSource } from '@contracts/node-list-source';
+import { UnexpectedResponse, UnavailableSource } from '@errors/node-list-source';
+import { RequestFail } from '@errors/application';
 import { logger } from '@loaders/logger';
-import { UnexpectedResponse } from '@errors/node-list-source';
 
 class OnionooAPI implements NodeListSource {
   private address: string;
 
   constructor() {
-    this.address = 'https://onionoo.torproject.org/summary?limita=5000';
+    this.address = 'https://onionooa.torproject.org/summary?limit=5000';
   }
 
   public async getNodeList(): Promise<string[]> {
@@ -33,13 +35,14 @@ class OnionooAPI implements NodeListSource {
           throw new UnexpectedResponse(status, statusText);
         } else if (error.request) {
           const { code } = error;
-          /* if (code === 'foo') {
-            throw foo
-          } */
 
-          logger.error(`Not received response. Details: ${error}`);
+          logger.error(`Not received response. Details: ${code} ${error}`);
+          if (axiosErrorCodes.UNAVAILABLE.includes(code)) {
+            throw new UnavailableSource(this.address);
+          }
         } else {
           logger.error(`Request wasn't performed. Details: ${error}`);
+          throw new RequestFail();
         }
       });
 
@@ -47,8 +50,5 @@ class OnionooAPI implements NodeListSource {
     return nodeList;
   }
 }
-
-const a = new OnionooAPI();
-a.getNodeList();
 
 export { OnionooAPI };
