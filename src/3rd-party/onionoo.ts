@@ -1,8 +1,5 @@
 import axios from 'axios';
-import * as axiosErrorCodes from '@utils/axios-error-codes';
 import { NodeListSource } from '@contracts/node-list-source';
-import { UnexpectedResponse, UnavailableSource } from '@errors/node-list-source';
-import { RequestFail } from '@errors/application';
 import { logger } from '@loaders/logger';
 
 class OnionooAPI implements NodeListSource {
@@ -29,20 +26,11 @@ class OnionooAPI implements NodeListSource {
       })
       .catch((error: any) => {
         if (error.response) {
-          const { status, statusText } = error.response;
-
-          logger.error(`Received status code ${status}.`);
-          throw new UnexpectedResponse(status, statusText);
+          logger.error(`Received status code ${error.response.status}.`);
         } else if (error.request) {
-          const { code } = error;
-
-          logger.error(`Not received response. Details: ${code} ${error}`);
-          if (axiosErrorCodes.UNAVAILABLE.includes(code)) {
-            throw new UnavailableSource(this.address);
-          }
+          logger.error(`Not received response. Details: ${error.code}`);
         } else {
           logger.error(`Request wasn't performed. Details: ${error}`);
-          throw new RequestFail();
         }
       });
 

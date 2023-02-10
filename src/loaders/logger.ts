@@ -2,13 +2,13 @@ import moment from 'moment';
 import {
   createLogger, config, format, transports,
 } from 'winston';
-import { reset, dim } from '@utils/ansi-style-codes';
+import { RESET, DIM } from '@utils/ansi-style-codes';
 
 const logTemplate = format.printf(({
   level, message, timestamp,
 }) => {
   const formattedTimestamp = moment(timestamp).format('YYYY/MM/DD - hh:mm:ss');
-  const colorizedTimestamp = `${dim}${formattedTimestamp}${reset}`;
+  const colorizedTimestamp = `${DIM}${formattedTimestamp}${RESET}`;
   return `[${level}] | ${colorizedTimestamp} | ${message}`;
 });
 
