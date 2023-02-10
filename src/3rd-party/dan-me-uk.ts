@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NodeListSource } from '@contracts/node-list-source';
-// import { logger } from '@loaders/logger';
+import { logger } from '@loaders/logger';
 
 class DanMeAPI implements NodeListSource {
   private address: string;
@@ -10,21 +10,33 @@ class DanMeAPI implements NodeListSource {
   }
 
   public async getNodeList(): Promise<string[]> {
+    logger.info('Starting to get node list from Dan Me API...');
     const nodeList: string[] = [];
 
+    logger.info(`Requesting to "${this.address}"...`);
     await axios.get(this.address)
       .then((response) => {
-        console.log(typeof response.data);
+        logger.info('Filtering response...');
+
+        const rawResponse: string = response.data;
+        const rawNodeList: string[] = rawResponse.split('\n');
+        rawNodeList.forEach((register) => {
+          nodeList.push(register);
+        });
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response) {
+          logger.error(`Received status code ${error.response.status}.`);
+        } else if (error.request) {
+          logger.error(`Not received response. Details: ${error.code}`);
+        } else {
+          logger.error(`Request wasn't performed. Details: ${error}`);
+        }
       });
 
+    logger.info('Returning node list...');
     return nodeList;
   }
 }
 
 export { DanMeAPI };
-
-const a = new DanMeAPI();
-a.getNodeList();
