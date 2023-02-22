@@ -83,14 +83,4 @@ class GetAllIps {
   }
 }
 
-(async () => {
-  const a = new OnionooAPI();
-  const b = new DanMeAPI();
-  const c = redisClient;
-  const d = new GetAllIps(a, b, c as any);
-
-  const e = await d.execute();
-  console.log(e);
-})();
-
 export { GetAllIps };
