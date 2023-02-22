@@ -1,12 +1,18 @@
+import fs from 'fs';
+import path from 'path';
 import { RedisClientType } from '@redis/client';
-import { OnionooAPI } from 'src/3rd-party/onionoo';
-import { DanMeAPI } from 'src/3rd-party/dan-me-uk';
+import { OnionooAPI } from '@3rd-party/onionoo';
+import { DanMeAPI } from '@3rd-party/dan-me-uk';
 import { logger } from '@loaders/logger';
+import { redisClient } from '@loaders/redis';
 
 interface GetAllIpsResponse {
   success: boolean,
   message?: string,
-  data?: { addresses: string[] },
+  data: {
+    results: number,
+    addresses: string[],
+  },
 }
 
 class GetAllIps {
@@ -23,24 +29,68 @@ class GetAllIps {
   }
 
   public async execute(): Promise<GetAllIpsResponse> {
-    const response: GetAllIpsResponse = { success: false, data: { addresses: [] } };
+    logger.info('Initializing "get-all-ips" use-case/service...');
 
-    await this.onionooClient.getNodeList()
-      .then((addresses) => {
-        addresses.forEach((ip) => response.data?.addresses.push(ip));
-      })
-      .catch((error) => {
-        logger.error(`vishkk. Details: ${error}`);
-      });
+    const response: GetAllIpsResponse = {
+      success: false,
+      data: { results: 0, addresses: [] },
+    };
 
-    await this.danMeClient.getNodeList()
-      .then((addresses) => {})
-      .catch((error) => {
-        logger.error(`vishkk. Details: ${error}`);
-      });
+    const onionooIps = await this.getOnionooIps();
+    const danMeIps = await this.getDanMeIps();
 
+    onionooIps.forEach((ip: string) => response.data.addresses.push(ip));
+    danMeIps.forEach((ip: string) => response.data.addresses.push(ip));
+
+    response.success = true;
+    response.data.results = (onionooIps.length + danMeIps.length);
+
+    logger.info('Finishing "get-all-ips" use-case/service.');
     return response;
   }
+
+  private async getOnionooIps(): Promise<string[]> {
+    logger.info('Requesting to Onionoo endpoint...');
+    const requestedIps = await this.onionooClient.getNodeList();
+    return requestedIps;
+  }
+
+  private async getDanMeIps(): Promise<string[]> {
+    logger.info('Searching by DanMe ips in Redis...');
+    const cachedIps: string[] = await this.redisClient.lRange('danMeIps', 0, -1);
+    if (cachedIps.length !== 0) return cachedIps;
+
+    const localStoredIpsPath = path.join(__dirname, '..', 'utils/backup-dan-me-ips.json');
+
+    logger.info('Requesting to DanMe endpoint...');
+    const requestedIps: string[] = await this.danMeClient.getNodeList();
+    if (requestedIps.length !== 0) {
+      logger.info('Updating DanMe ips in Redis cache...');
+      const expireTimeInSeconds = 1800; // 30 minutes
+      await this.redisClient.rPush('danMeIps', requestedIps);
+      await this.redisClient.expire('danMeIps', expireTimeInSeconds);
+
+      logger.info('Updating DanMe ips in locally stored JSON file...');
+      fs.writeFileSync(localStoredIpsPath, JSON.stringify({ ips: requestedIps }));
+
+      return requestedIps;
+    }
+
+    logger.info('Searching by DanMe ips in locally stored JSON file...');
+    const rawLocalStoredIps = fs.readFileSync(localStoredIpsPath);
+    const localStoredIps = JSON.parse(rawLocalStoredIps.toString()).ips;
+    return localStoredIps;
+  }
 }
+
+(async () => {
+  const a = new OnionooAPI();
+  const b = new DanMeAPI();
+  const c = redisClient;
+  const d = new GetAllIps(a, b, c as any);
+
+  const e = await d.execute();
+  console.log(e);
+})();
 
 export { GetAllIps };

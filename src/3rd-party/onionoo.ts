@@ -6,7 +6,7 @@ class OnionooAPI implements NodeListSource {
   private address: string;
 
   constructor() {
-    this.address = 'https://onionooa.torproject.org/summary?limit=5000';
+    this.address = 'https://onionoo.torproject.org/summary?limit=5000';
   }
 
   public async getNodeList(): Promise<string[]> {
