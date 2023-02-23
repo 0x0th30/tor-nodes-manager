@@ -4,7 +4,6 @@ import { RedisClientType } from '@redis/client';
 import { OnionooAPI } from '@3rd-party/onionoo';
 import { DanMeAPI } from '@3rd-party/dan-me-uk';
 import { logger } from '@loaders/logger';
-import { redisClient } from '@loaders/redis';
 
 interface GetAllIpsResponse {
   success: boolean,
