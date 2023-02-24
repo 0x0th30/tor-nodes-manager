@@ -82,4 +82,4 @@ class GetAllIps {
   }
 }
 
-export { GetAllIps };
+export { GetAllIps, GetAllIpsResponse };
