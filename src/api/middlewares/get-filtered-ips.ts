@@ -21,7 +21,7 @@ class GetFilteredIpsMiddleware implements Middleware {
     const getFilteredIps = new GetFilteredIps(getAllIps, getBannedIps);
     const getFilteredIpsResponse: GetFilteredIpsResponse = await getFilteredIps.execute();
 
-    if (!getFilteredIpsResponse.success) {
+    if (!getFilteredIpsResponse.success || !getFilteredIpsResponse.data) {
       responseContent.success = false;
       responseContent.message = getFilteredIpsResponse.message;
 
@@ -30,9 +30,9 @@ class GetFilteredIpsMiddleware implements Middleware {
 
     responseContent.success = true;
     responseContent.data = {
-      results: getFilteredIpsResponse.data!.results,
-      bannedIps: getFilteredIpsResponse.data!.bannedIps,
-      addresses: getFilteredIpsResponse.data!.addresses,
+      results: getFilteredIpsResponse.data.results,
+      bannedIps: getFilteredIpsResponse.data.bannedIps,
+      addresses: getFilteredIpsResponse.data.addresses,
     };
 
     return response.status(200).json(responseContent);
