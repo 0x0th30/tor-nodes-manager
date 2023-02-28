@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { NodeListSource } from '@contracts/node-list-source';
 import { logger } from '@loaders/logger';
+import { InvalidResponseFromSource, NoResponseFromSource }
+  from '@errors/node-list-source-error';
 
 class OnionooAPI implements NodeListSource {
   private address: string;
@@ -27,10 +29,13 @@ class OnionooAPI implements NodeListSource {
       .catch((error: any) => {
         if (error.response) {
           logger.error(`Received status code ${error.response.status}.`);
+          throw new InvalidResponseFromSource(this.address, error.response.status);
         } else if (error.request) {
           logger.error(`Not received response. Details: ${error.code}`);
+          throw new NoResponseFromSource(this.address, error.code);
         } else {
           logger.error(`Request wasn't performed. Details: ${error}`);
+          throw error;
         }
       });
 
