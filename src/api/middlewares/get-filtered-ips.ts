@@ -25,6 +25,7 @@ class GetFilteredIpsMiddleware implements Middleware {
       responseContent.success = false;
       responseContent.message = getFilteredIpsResponse.message;
 
+      logger.error('Internal Server Error. Returning status code 500!');
       return response.status(500).json(responseContent);
     }
 
@@ -35,6 +36,7 @@ class GetFilteredIpsMiddleware implements Middleware {
       addresses: getFilteredIpsResponse.data.addresses,
     };
 
+    logger.info('Request was successfully responded. Returning status code 200!');
     return response.status(200).json(responseContent);
   }
 }
