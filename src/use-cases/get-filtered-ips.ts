@@ -56,7 +56,7 @@ class GetFilteredIps {
       else bannedIpsCount += 1;
     });
 
-    logger.info('All banned IPs was successfully hidden.');
+    logger.info(`All ${bannedIpsCount} banned IPs was successfully hidden.`);
     response.success = true;
     response.data = {
       results: allIps.length,
