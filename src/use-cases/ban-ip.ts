@@ -55,7 +55,7 @@ class BanIp {
     }
 
     logger.error(`Failed by unknown error. Details: ${error}`);
-    return 'An unknown error was throwed, please report this issue!';
+    return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
 
