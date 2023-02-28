@@ -4,11 +4,12 @@ import { RedisClientType } from '@redis/client';
 import { OnionooAPI } from '@3rd-party/onionoo';
 import { DanMeAPI } from '@3rd-party/dan-me-uk';
 import { logger } from '@loaders/logger';
+import { NodeListSourceError } from '@errors/node-list-source-error';
 
 interface GetAllIpsResponse {
   success: boolean,
   message?: string,
-  data: {
+  data?: {
     results: number,
     addresses: string[],
   },
@@ -30,19 +31,27 @@ class GetAllIps {
   public async execute(): Promise<GetAllIpsResponse> {
     logger.info('Initializing "get-all-ips" use-case/service...');
 
-    const response: GetAllIpsResponse = {
-      success: false,
-      data: { results: 0, addresses: [] },
-    };
+    const response: GetAllIpsResponse = { success: false };
 
-    const onionooIps = await this.getOnionooIps();
-    const danMeIps = await this.getDanMeIps();
+    try {
+      const onionooIps = await this.getOnionooIps();
+      const danMeIps = await this.getDanMeIps();
 
-    onionooIps.forEach((ip: string) => response.data.addresses.push(ip));
-    danMeIps.forEach((ip: string) => response.data.addresses.push(ip));
+      response.data = { results: 0, addresses: [] };
 
-    response.success = true;
-    response.data.results = (onionooIps.length + danMeIps.length);
+      onionooIps.forEach((ip: string) => {
+        if (ip) response.data?.addresses.push(ip);
+      });
+      danMeIps.forEach((ip: string) => {
+        if (ip) response.data?.addresses.push(ip);
+      });
+
+      response.success = true;
+      response.data.results = (onionooIps.length + danMeIps.length);
+    } catch (error: any) {
+      response.success = false;
+      response.message = this.generateSecureErrorMessage(error);
+    }
 
     logger.info('Finishing "get-all-ips" use-case/service.');
     return response;
@@ -79,6 +88,21 @@ class GetAllIps {
     const rawLocalStoredIps = fs.readFileSync(localStoredIpsPath);
     const localStoredIps = JSON.parse(rawLocalStoredIps.toString()).ips;
     return localStoredIps;
+  }
+
+  private generateSecureErrorMessage(error: Error) {
+    if (error instanceof NodeListSourceError) {
+      switch (error.name) {
+        case 'InvalidResponseFromSource':
+          return `"${error.info.url}" sent status ${error.info.status}, try again later!`;
+        case 'NoResponseFromSource':
+          return `"${error.info.url}" sent ${error.info.code}, please report this issue!`;
+        default:
+          return `"${error.info.url}" communication error, please report this issue!`;
+      }
+    }
+
+    return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
 
