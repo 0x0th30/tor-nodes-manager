@@ -1,6 +1,6 @@
 import { Error } from 'mongoose';
 import { BanIp, BanIpRequest, BanIpResponse } from '@use-cases/ban-ip';
-import { BanIpMock } from '@mocks/ban-ip-mock';
+import { BanIpMock } from '@mocks/ban-ip';
 import { BannedIpMock } from '@mocks/banned-ip';
 
 const BanIpSUT = new BanIp();
