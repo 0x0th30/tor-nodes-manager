@@ -8,6 +8,7 @@
     "@types/jest": "^29.2.3",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
+    "axios-mock-adapter": "^1.21.2",
     "babel-plugin-tsconfig-paths-module-resolver": "^1.0.3",
     "babel-preset-minify": "^0.5.2",
     "eslint": "^8.0.1",
