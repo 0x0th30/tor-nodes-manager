@@ -64,19 +64,15 @@ class GetAllIps {
   }
 
   private async getDanMeIps(): Promise<string[]> {
-    logger.info('Searching by DanMe ips in Redis...');
-    const cachedIps: string[] = await this.redisClient.lRange('danMeIps', 0, -1);
-    if (cachedIps.length !== 0) return cachedIps;
+    const cachedIPs = await this.searchByDanMeIpsInRedis();
+    if (cachedIPs) return cachedIPs;
 
     const localStoredIpsPath = path.join(__dirname, '..', 'utils/backup-dan-me-ips.json');
 
     logger.info('Requesting to DanMe endpoint...');
     const requestedIps: string[] = await this.danMeClient.getNodeList();
     if (requestedIps.length !== 0) {
-      logger.info('Updating DanMe ips in Redis cache...');
-      const expireTimeInSeconds = 1800; // 30 minutes
-      await this.redisClient.rPush('danMeIps', requestedIps);
-      await this.redisClient.expire('danMeIps', expireTimeInSeconds);
+      this.storeDanMeIpsInRedis(requestedIps);
 
       logger.info('Updating DanMe ips in locally stored JSON file...');
       fs.writeFileSync(localStoredIpsPath, JSON.stringify({ ips: requestedIps }));
@@ -88,6 +84,22 @@ class GetAllIps {
     const rawLocalStoredIps = fs.readFileSync(localStoredIpsPath);
     const localStoredIps = JSON.parse(rawLocalStoredIps.toString()).ips;
     return localStoredIps;
+  }
+
+  private async searchByDanMeIpsInRedis(): Promise<string[] | undefined> {
+    logger.info('Searching by DanMe ips in Redis...');
+
+    // 0 = first list element; -1 = last list element
+    const cachedIps: string[] = await this.redisClient.lRange('danMeIps', 0, -1);
+    if (cachedIps.length !== 0) return cachedIps;
+    return undefined;
+  }
+
+  private async storeDanMeIpsInRedis(ipsToStore: string[]): Promise<void> {
+    logger.info('Updating DanMe ips in Redis cache...');
+    const expireTimeInSeconds = 1800; // 30 minutes
+    await this.redisClient.rPush('danMeIps', ipsToStore);
+    await this.redisClient.expire('danMeIps', expireTimeInSeconds);
   }
 
   private generateSecureErrorMessage(error: Error) {
