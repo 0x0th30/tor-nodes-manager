@@ -4,7 +4,8 @@ import { RedisClientType } from '@redis/client';
 import { OnionooAPI } from '@3rd-party/onionoo';
 import { DanMeAPI } from '@3rd-party/dan-me-uk';
 import { logger } from '@loaders/logger';
-import { NodeListSourceError } from '@errors/node-list-source-error';
+import { InvalidResponseFromSource, NodeListSourceError, NoResponseFromSource }
+  from '@errors/node-list-source-error';
 
 interface GetAllIpsResponse {
   success: boolean,
@@ -103,15 +104,14 @@ class GetAllIps {
   }
 
   private generateSecureErrorMessage(error: Error) {
+    if (error instanceof InvalidResponseFromSource) {
+      return `"${error.info.url}" sent status ${error.info.status}, try again later!`;
+    }
+    if (error instanceof NoResponseFromSource) {
+      return `"${error.info.url}" sent ${error.info.code}, please report this issue!`;
+    }
     if (error instanceof NodeListSourceError) {
-      switch (error.name) {
-        case 'InvalidResponseFromSource':
-          return `"${error.info.url}" sent status ${error.info.status}, try again later!`;
-        case 'NoResponseFromSource':
-          return `"${error.info.url}" sent ${error.info.code}, please report this issue!`;
-        default:
-          return `"${error.info.url}" communication error, please report this issue!`;
-      }
+      return `"${error.info.url}" communication error, please report this issue!`;
     }
 
     return 'An internal/unknown error was throwed, please report this issue!';
