@@ -8,7 +8,8 @@ import { OnionooAPIMock } from '@mocks/onionoo';
 import { DanMeAPIMock } from '@mocks/dan-me-uk';
 import { RedisClientMock } from '@mocks/redis';
 import { fsMock } from '@mocks/fs';
-import { InvalidResponseFromSource, NoResponseFromSource } from '@errors/node-list-source-error';
+import { InvalidResponseFromSource, NoResponseFromSource }
+  from '@errors/node-list-source-error';
 
 const GetAllIpsSUT = new GetAllIps(
   OnionooAPIMock as unknown as OnionooAPI,
