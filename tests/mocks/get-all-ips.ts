@@ -7,4 +7,6 @@ export const GetAllIpsMock = {
   searchByDanMeIpsInRedis: jest
     .spyOn((GetAllIps as any).prototype, 'searchByDanMeIpsInRedis'),
   storeDanMeIpsInRedis: jest.spyOn((GetAllIps as any).prototype, 'storeDanMeIpsInRedis'),
+  generateSecureErrorMessage: jest
+    .spyOn((GetAllIps as any).prototype, 'generateSecureErrorMessage'),
 };
