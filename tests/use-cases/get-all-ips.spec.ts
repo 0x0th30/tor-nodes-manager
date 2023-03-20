@@ -8,7 +8,7 @@ import { OnionooAPIMock } from '@mocks/onionoo';
 import { DanMeAPIMock } from '@mocks/dan-me-uk';
 import { RedisClientMock } from '@mocks/redis';
 import { fsMock } from '@mocks/fs';
-import { NoResponseFromSource } from '@errors/node-list-source-error';
+import { InvalidResponseFromSource, NoResponseFromSource } from '@errors/node-list-source-error';
 
 const GetAllIpsSUT = new GetAllIps(
   OnionooAPIMock as unknown as OnionooAPI,
@@ -234,6 +234,31 @@ describe('"GetAllIps" class', () => {
         expect(RedisClientMock.expire).toBeCalled();
         expect(RedisClientMock.expire).toBeCalledWith('danMeIps', danMeIpsTTLInSeconds);
       });
+    });
+  });
+  describe('(private) "generateSecureErrorMessage" method', () => {
+    it('should return message according throwed error', async () => {
+      GetAllIpsMock.generateSecureErrorMessage.mockRestore();
+
+      let error;
+      let expectedMessage: string;
+      let generatedMessage: string;
+
+      error = new InvalidResponseFromSource('<url>', 500);
+      expectedMessage = '"<url>" sent status 500, try again later!';
+      generatedMessage = (GetAllIpsSUT as any).generateSecureErrorMessage(error);
+      expect(generatedMessage).toEqual(expectedMessage);
+
+      error = new NoResponseFromSource('<url>', '<code>');
+      expectedMessage = '"<url>" sent <code>, please report this issue!';
+      generatedMessage = (GetAllIpsSUT as any).generateSecureErrorMessage(error);
+      expect(generatedMessage).toEqual(expectedMessage);
+
+      error = new Error('foo bar');
+      expectedMessage = 'An internal/unknown error was throwed, please report'
+        + ' this issue!';
+      generatedMessage = (GetAllIpsSUT as any).generateSecureErrorMessage(error);
+      expect(generatedMessage).toEqual(expectedMessage);
     });
   });
 });
