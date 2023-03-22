@@ -1,12 +1,13 @@
 services:
   api:
     build:
-      # dockerfile: Dockerfile
-      dockerfile: Dockerfile.dev
+      context: ..
+      # dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.dev
     ports:
       - 3000:3000
     env_file:
-      - config/.env
+      - ../config/.env
     depends_on:
       - mongodb
       - redis
@@ -24,4 +25,4 @@ services:
     ports:
       - 6379:6379
     env_file:
-      - config/redis.env
+      - ../config/redis.env
