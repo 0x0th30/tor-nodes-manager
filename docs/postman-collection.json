@@ -11,6 +11,15 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"178.218.144.18\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{host}}:{{port}}/ips/ban",
 					"host": [
@@ -48,7 +57,17 @@
 			"name": "get all ips",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{port}}/ips",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"ips"
+					]
+				}
 			},
 			"response": []
 		},
@@ -58,14 +77,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}:{{port}}/ips/banned",
+					"raw": "{{host}}:{{port}}/ips/filtered",
 					"host": [
 						"{{host}}"
 					],
 					"port": "{{port}}",
 					"path": [
 						"ips",
-						"banned"
+						"filtered"
 					]
 				}
 			},
