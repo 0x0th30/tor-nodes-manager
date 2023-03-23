@@ -1,5 +1,5 @@
-# TOR Nodes Manager (refactored!)
-This project represents a rewritten version of [this project](https://github.com/0x0th30/tor-nodes-RestAPI), which was requested in 2021 when I interviewed for my current job. The main goal working in it is improve and show my developed skills in coding and design of scalable/maintainable applications.
+# TOR Nodes Manager (refactoring!)
+This project represents a rewritten version of [this project](https://github.com/0x0th30/tor-nodes-RestAPI), which was requested in 2021 when I interviewed for my current job. The main goal working in it is improve and show my developed skills in coding and design of scalable/maintainable applications. WORK IN PROGRESSSSS!!!
 
 ![image](https://user-images.githubusercontent.com/61753537/227114101-02ca55c6-fe9d-4f10-91d2-f103e8bff7db.png)
 
