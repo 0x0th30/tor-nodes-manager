@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { NodeListSource } from '@contracts/node-list-source';
+import { INodeListProvider } from '@providers/INodeListProvider';
 import { logger } from '@loaders/logger';
 import { InvalidResponseFromSource, NoResponseFromSource }
   from '@errors/node-list-source-error';
 
-class DanMeAPI implements NodeListSource {
+class DanMeAPI implements INodeListProvider {
   private address: string;
 
   constructor() {

@@ -1,8 +1,8 @@
 import path from 'path';
 import { RedisClientType } from '@redis/client';
 import { GetAllIps, GetAllIpsResponse } from '@use-cases/get-all-ips';
-import { OnionooAPI } from '@3rd-party/onionoo';
-import { DanMeAPI } from '@3rd-party/dan-me-uk';
+import { OnionooAPI } from '@providers/implementations/onionoo';
+import { DanMeAPI } from '@providers/implementations/dan-me-uk';
 import { GetAllIpsMock } from '@mocks/get-all-ips';
 import { OnionooAPIMock } from '@mocks/onionoo';
 import { DanMeAPIMock } from '@mocks/dan-me-uk';
