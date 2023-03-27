@@ -1,32 +1,32 @@
 import axios from 'axios';
-import { INodeListProvider } from '@providers/INodeListProvider';
+import { NodeListProvider } from '@contracts/node-list-provider';
 import { logger } from '@loaders/logger';
 import { InvalidResponseFromSource, NoResponseFromSource }
   from '@errors/node-list-source-error';
 
-class OnionooAPI implements INodeListProvider {
+class DanMeAPI implements NodeListProvider {
   private address: string;
 
   constructor() {
-    this.address = 'https://onionoo.torproject.org/summary?limit=5000';
+    this.address = 'https://www.dan.me.uk/torlist/';
   }
 
   public async getNodeList(): Promise<string[]> {
-    logger.info('Starting to get node list from Onionoo API...');
+    logger.info('Starting to get node list from Dan Me API...');
     const nodeList: string[] = [];
 
     logger.info(`Requesting to "${this.address}"...`);
     await axios.get(this.address)
-      .then((response: any) => {
+      .then((response) => {
         logger.info('Filtering response...');
 
-        const rawNodeList: object[] = response.data.relays;
-        rawNodeList.forEach((register: any) => {
-          const nodeIP: string = register.a[0];
-          nodeList.push(nodeIP);
+        const rawResponse: string = response.data;
+        const rawNodeList: string[] = rawResponse.split('\n');
+        rawNodeList.forEach((register) => {
+          nodeList.push(register);
         });
       })
-      .catch((error: any) => {
+      .catch((error) => {
         if (error.response) {
           logger.error(`Received status code ${error.response.status}.`);
           throw new InvalidResponseFromSource(this.address, error.response.status);
@@ -44,4 +44,4 @@ class OnionooAPI implements INodeListProvider {
   }
 }
 
-export { OnionooAPI };
+export { DanMeAPI };
