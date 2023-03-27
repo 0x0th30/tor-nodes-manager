@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { RedisClientType } from '@redis/client';
-import { OnionooAPI } from '@3rd-party/onionoo';
-import { DanMeAPI } from '@3rd-party/dan-me-uk';
+import { INodeListProvider } from '@providers/INodeListProvider';
 import { logger } from '@loaders/logger';
 import { InvalidResponseFromSource, NodeListSourceError, NoResponseFromSource }
   from '@errors/node-list-source-error';
@@ -17,13 +16,17 @@ interface GetAllIpsResponse {
 }
 
 class GetAllIps {
-  private onionooClient: OnionooAPI;
+  private onionooClient: INodeListProvider;
 
-  private danMeClient: DanMeAPI;
+  private danMeClient: INodeListProvider;
 
   private redisClient: RedisClientType<any>;
 
-  constructor(onionoo: OnionooAPI, danMe: DanMeAPI, redis: RedisClientType<any>) {
+  constructor(
+    onionoo: INodeListProvider,
+    danMe: INodeListProvider,
+    redis: RedisClientType<any>,
+  ) {
     this.onionooClient = onionoo;
     this.danMeClient = danMe;
     this.redisClient = redis;
