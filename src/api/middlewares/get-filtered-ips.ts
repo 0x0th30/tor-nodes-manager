@@ -3,8 +3,8 @@ import { Middleware, APIResponse } from '@contracts/middleware';
 import { GetAllIps } from '@use-cases/get-all-ips';
 import { GetBannedIps } from '@use-cases/get-banned-ips';
 import { GetFilteredIps, GetFilteredIpsResponse } from '@use-cases/get-filtered-ips';
-import { OnionooAPI } from '@3rd-party/onionoo';
-import { DanMeAPI } from 'src/providers/implementations/dan-me-uk';
+import { OnionooAPI } from '@providers/onionoo';
+import { DanMeAPI } from '@providers/dan-me-uk';
 import { redisClient } from '@loaders/redis';
 import { logger } from '@loaders/logger';
 
