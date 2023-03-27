@@ -1,4 +1,4 @@
-import { DanMeAPI } from '@providers/implementations/dan-me-uk';
+import { DanMeAPI } from '@3rd-party/dan-me-uk';
 
 export const DanMeAPIMock = {
   getNodeList: jest.spyOn(DanMeAPI.prototype, 'getNodeList'),

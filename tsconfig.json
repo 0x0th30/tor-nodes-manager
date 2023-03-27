@@ -32,7 +32,7 @@
     "baseUrl": ".",
     "paths": {
       "@api/*": ["src/api/*"],
-      "@providers/*": ["src/providers/*"],
+      "@3rd-party/*": ["src/3rd-party/*"],
       "@middlewares/*": ["src/api/middlewares/*"],
       "@routes/*": ["src/api/routes/*"],
       "@config/*": ["src/config/*"],

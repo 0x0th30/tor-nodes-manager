@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { INodeListProvider } from '@providers/INodeListProvider';
+import { NodeListSource } from '@contracts/node-list-source';
 import { logger } from '@loaders/logger';
 import { InvalidResponseFromSource, NoResponseFromSource }
   from '@errors/node-list-source-error';
 
-class OnionooAPI implements INodeListProvider {
+class OnionooAPI implements NodeListSource {
   private address: string;
 
   constructor() {
