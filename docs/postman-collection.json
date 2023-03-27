@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"address\": \"178.218.144.18\"\n}",
+					"raw": "{\n    \"address\": \"8.8.8.8\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -29,6 +29,34 @@
 					"path": [
 						"ips",
 						"ban"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unban ip",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"8.8.8.8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/ips/unban",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"ips",
+						"unban"
 					]
 				}
 			},
