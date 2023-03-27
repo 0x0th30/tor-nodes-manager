@@ -5,6 +5,7 @@
   },
   "extends": [
     "airbnb-base",
+    "airbnb-typescript",
     "plugin:@typescript-eslint/recommended"
   ],
   "overrides": [],
