@@ -16,11 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Entering "app" directory
-      run: cd app
-
     - name: Installing modules
-      run: yarn
+      run: cd app && yarn install
 
     - name: Running SCA
-      run: yarn sca 
+      run: cd app && yarn sca

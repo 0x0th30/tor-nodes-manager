@@ -16,11 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Entering "app" directory
-      run: cd app
-
     - name: Installing modules
-      run: yarn
+      run: cd app && yarn install
 
     - name: Running tests suite
-      run: yarn test
+      run: cd app && yarn test
