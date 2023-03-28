@@ -1,9 +1,9 @@
 FROM node:16-alpine as builder
 USER node
 WORKDIR /app
-COPY --chown=node:node package.json .
+COPY --chown=node:node app/package.json .
 RUN yarn install
-COPY --chown=node:node . .
+COPY --chown=node:node app .
 RUN yarn build
  
 FROM node:16-alpine
