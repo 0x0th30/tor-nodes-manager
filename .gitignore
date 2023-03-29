@@ -1,7 +1,6 @@
 *.env
 !*example.env
 
-
 # Logs
 logs
 *.log
