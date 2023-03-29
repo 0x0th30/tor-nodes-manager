@@ -5,11 +5,11 @@
     "moduleResolution": "node",
     "typeRoots": [
       "./node_modules/@types",
-      "app/src/@types"
+      "src/@types"
     ],
     "rootDirs": [
-      "app/src",
-      "app/tests"
+      "src",
+      "tests"
     ],
     "outDir": "./dist",
     "removeComments": true,
@@ -48,9 +48,9 @@
     }
   },
   "include": [
-    "app/src/**/*.ts",
-    "app/src/**/*.tsx",
-    "app/tests/**/*.ts",
-    "app/tests/**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ]
 }
