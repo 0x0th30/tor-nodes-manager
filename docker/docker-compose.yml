@@ -27,3 +27,9 @@ services:
     image: redis
     env_file:
       - ../config/redis.env
+
+  rabbitmq:
+    container_name: tor-nodes-manager-rabbitmq
+    image: rabbitmq
+    env_file:
+      - ../config/rabbitmq.env
