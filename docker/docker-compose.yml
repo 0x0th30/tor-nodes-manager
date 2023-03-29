@@ -1,5 +1,6 @@
 services:
   api:
+    container_name: tor-nodes-manager-api
     build:
       context: ..
       # dockerfile: docker/Dockerfile
@@ -9,20 +10,20 @@ services:
     env_file:
       - ../config/.env
     depends_on:
+      - rabbitmq
       - mongodb
       - redis
     links:
+      - rabbitmq
       - mongodb
       - redis
 
   mongodb:
+    container_name: tor-nodes-manager-mongodb
     image: mongo
-    ports:
-      - 27017:27017
 
   redis:
+    container_name: tor-nodes-manager-redis
     image: redis
-    ports:
-      - 6379:6379
     env_file:
       - ../config/redis.env
