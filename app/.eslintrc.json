@@ -25,6 +25,7 @@
       "error",
       90
     ],
-    "dot-notation": "off"
+    "dot-notation": "off",
+    "no-useless-constructor": "off"
   }
 }
