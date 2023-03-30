@@ -5,3 +5,6 @@
 !app/tsconfig.json
 !app/package.json
 !app/babel.config.js
+
+!jobs/package.json
+!jobs/*.js
