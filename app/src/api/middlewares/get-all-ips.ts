@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
 import { Middleware, APIResponse } from '@contracts/middleware';
 import { GetAllIps, GetAllIpsResponse } from '@use-cases/get-all-ips';
-import { OnionooAPI } from '@providers/onionoo';
-import { DanMeAPI } from '@providers/dan-me-uk';
 import { redisClient } from '@loaders/redis';
+import { RabbitMQ } from '@loaders/rabbitmq';
 import { logger } from '@loaders/logger';
 import { RedisClientType } from '@redis/client';
 
@@ -12,12 +11,11 @@ class GetAllIpsMiddleware implements Middleware {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
     const responseContent: APIResponse = { success: false };
 
-    const onionooClient = new OnionooAPI();
-    const danMeClient = new DanMeAPI();
+    const rabbitmqClient = new RabbitMQ();
+
     const getAllIps = new GetAllIps(
-      onionooClient,
-      danMeClient,
       redisClient as RedisClientType,
+      rabbitmqClient,
     );
 
     const getAllIpsResponse: GetAllIpsResponse = await getAllIps.execute();

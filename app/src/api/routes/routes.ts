@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { GetAllIpsMiddleware } from '@middlewares/get-all-ips';
 import { BanIpMiddleware } from '@middlewares/ban-ip';
-import { UnbanIpMiddleware } from '@api/middlewares/uban-ip';
+import { UnbanIpMiddleware } from '@api/middlewares/unban-ip';
 import { GetBannedIpsMiddleware } from '@api/middlewares/get-banned-ips';
 import { GetFilteredIpsMiddleware } from '@api/middlewares/get-filtered-ips';
 
