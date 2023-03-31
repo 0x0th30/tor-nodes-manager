@@ -1,7 +1,4 @@
-import fs from 'fs';
-import path from 'path';
 import { RedisClientType } from '@redis/client';
-import { IORedis } from '@loaders/ioredis';
 import { RabbitMQ } from '@loaders/rabbitmq';
 import { logger } from '@loaders/logger';
 import { InvalidResponseFromSource, NodeListSourceError, NoResponseFromSource }
@@ -44,7 +41,7 @@ class GetAllIps {
 
   private async getTorNodes(): Promise<string[]> {
     const tornodes: string[] = await this.redis.lRange('tornodes', 0, -1);
-    const tornodesTTL = await IORedis.ttl('tornodes');
+    const tornodesTTL = await this.redis.ttl('tornodes');
     const minimumTTLToUpdateCache = 900; // 900s = 15min
 
     if (tornodes && tornodesTTL > minimumTTLToUpdateCache) return tornodes;
