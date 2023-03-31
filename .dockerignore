@@ -7,4 +7,4 @@
 !app/babel.config.js
 
 !jobs/package.json
-!jobs/*.js
+!jobs/src
