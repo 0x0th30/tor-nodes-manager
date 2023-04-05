@@ -23,13 +23,16 @@ class OnionooAPI {
       .catch((error) => {
         if (error.response) {
           console.log(`Received status code ${error.response.status}.`);
-          throw error;
+          // throw error;
+          console.log(error);
         } else if (error.request) {
           console.log(`Not received response. Details: ${error.code}`);
-          throw error;
+          // throw error;
+          console.log(error);
         } else {
           console.log(`Request wasn't performed. Details: ${error}`);
-          throw error;
+          // throw error;
+          console.log(error);
         }
       });
 

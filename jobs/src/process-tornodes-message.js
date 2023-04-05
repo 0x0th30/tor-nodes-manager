@@ -1,9 +1,12 @@
 const amqp = require('amqplib/callback_api');
 const onionooAPI = require('./providers/onionoo');
 const danMeUkAPI = require('./providers/dan-me-uk');
+const redis = require('./providers/redis');
 
 const queue = 'tornodes'
-const uri = 'amqp://user:password@rabbitmq:5672';
+// const uri = process.env['RABBITMQ_URI'];
+const uri = 'amqp://user:password@localhost:5672';
+console.log(uri);
 
 amqp.connect(uri, (connectionError, connection) => {
   if (connectionError) throw connectionError;
@@ -12,20 +15,34 @@ amqp.connect(uri, (connectionError, connection) => {
     if (channelError) throw channelError;
 
     channel.consume(queue, async (message) => {
-      console.log('dentro da queue')
-
-      const response = [];
-      const jsonfiedMessage = message.content.toJSON();
+      console.log('dentro da queue');
+      const tornodes = [];
+      const jsonfiedMessage = JSON.parse(message.content.toString());
+      console.log(jsonfiedMessage)
 
       if (jsonfiedMessage.getOnionooIps) {
-        await onionooAPI.getNodeList().then(value => response.push(value));
+        console.log('pegando ips da onionoo');
+        await onionooAPI.getNodeList()
+          .then((nodeList) => {
+            nodeList.forEach((nodeIp) => tornodes.push(nodeIp));
+          });
       }
 
-      if (jsonfiedMessage.getDanMeUkIps) {
-        await danMeUkAPI.getNodeList().then(value => response.push(value));
-      }
+      // if (jsonfiedMessage.getDanMeUkIps) {
+      //   console.log('pegando ips da dan me uk');
+      //   await danMeUkAPI.getNodeList()
+      //     .then((nodeList) => {
+      //       nodeList.forEach((nodeIp) => tornodes.push(nodeIp));
+      //     });
+      // }
 
-      return response;
+      const expireTimeInSeconds = 2700; // 45 minutes
+
+      console.log('cacheando ips');
+
+      console.log(tornodes.length);
+      await redis.rPush('tornodes', tornodes);
+      await redis.expire('tornodes', expireTimeInSeconds);
     });
   });
 });

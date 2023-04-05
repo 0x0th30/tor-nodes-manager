@@ -27,12 +27,16 @@ services:
     image: redis
     env_file:
       - ../config/redis.env
+    ports:
+      - 6379:6379
 
   rabbitmq:
     container_name: tor-nodes-manager-rabbitmq
     image: rabbitmq
     env_file:
       - ../config/rabbitmq.env
+    ports:
+      - 5672:5672
 
   jobs:
     container_name: tor-nodes-manager-jobs
@@ -42,6 +46,8 @@ services:
     env_file:
       - ../config/.env
     depends_on:
+      - redis
       - rabbitmq
     links:
+      - redis
       - rabbitmq

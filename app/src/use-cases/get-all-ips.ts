@@ -44,69 +44,20 @@ class GetAllIps {
     const tornodesTTL = await this.redis.ttl('tornodes');
     const minimumTTLToUpdateCache = 900; // 900s = 15min
 
+    const queue = 'tornodes';
+    const queueSize = await this.rabbitmq.getQueueSize(queue);
+
+    if (queueSize > 0) return this.getTorNodes();
     if (tornodes && tornodesTTL > minimumTTLToUpdateCache) return tornodes;
-    if (tornodes && tornodesTTL <= minimumTTLToUpdateCache) {
-      const queue = 'tornodes';
+    if (tornodes && tornodesTTL <= minimumTTLToUpdateCache && queueSize === 0) {
       const message = { getOnionooIps: true, getDanMeUkIps: true };
       this.rabbitmq.sendMessageToQueue(queue, message);
 
       return tornodes;
     }
 
-    const queue = 'tornodes';
-    const message = { getOnionooIps: true, getDanMeUkIps: true };
-    this.rabbitmq.sendMessageToQueue(queue, message);
     return this.getTorNodes();
   }
-
-  // private async getOnionooIps(): Promise<string[]> {
-  //   logger.info('Requesting to Onionoo endpoint...');
-  //   const requestedIps = await this.onionooClient.getNodeList();
-  //   return requestedIps;
-  // }
-
-  // private async getDanMeIps(): Promise<string[]> {
-  //   const cachedIPs = await this.searchByDanMeIpsInRedis();
-  //   if (cachedIPs) return cachedIPs;
-
-  //   const localStoredIpsPath = path.join(
-  //     __dirname,
-  //     '..',
-  //     'utils/backup-dan-me-ips.json',
-  //   );
-
-  //   logger.info('Requesting to DanMe endpoint...');
-  //   const requestedIps: string[] = await this.danMeClient.getNodeList();
-  //   if (requestedIps.length !== 0) {
-  //     this.storeDanMeIpsInRedis(requestedIps);
-
-  //     logger.info('Updating DanMe ips in locally stored JSON file...');
-  //     fs.writeFileSync(localStoredIpsPath, JSON.stringify({ ips: requestedIps }));
-
-  //     return requestedIps;
-  //   }
-
-  //   logger.info('Searching by DanMe ips in locally stored JSON file...');
-  //   const rawLocalStoredIps = fs.readFileSync(localStoredIpsPath);
-  //   const localStoredIps = JSON.parse(rawLocalStoredIps.toString()).ips;
-  //   return localStoredIps;
-  // }
-
-  // private async searchByDanMeIpsInRedis(): Promise<string[] | undefined> {
-  //   logger.info('Searching by DanMe ips in Redis...');
-
-  //   // 0 = first list element; -1 = last list element
-  //   const cachedIps: string[] = await this.redisClient.lRange('danMeIps', 0, -1);
-  //   if (cachedIps.length !== 0) return cachedIps;
-  //   return undefined;
-  // }
-
-  // private async storeDanMeIpsInRedis(ipsToStore: string[]): Promise<void> {
-  //   logger.info('Updating DanMe ips in Redis cache...');
-  //   const expireTimeInSeconds = 1800; // 30 minutes
-  //   await this.redisClient.rPush('danMeIps', ipsToStore);
-  //   await this.redisClient.expire('danMeIps', expireTimeInSeconds);
-  // }
 
   private generateSecureErrorMessage(error: Error) {
     if (error instanceof InvalidResponseFromSource) {
