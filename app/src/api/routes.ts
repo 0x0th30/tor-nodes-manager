@@ -9,10 +9,10 @@ import { GetFilteredIpsMiddleware }
 
 const router = Router();
 
-router.get('/ips', new GetAllIpsMiddleware().action);
-router.post('/ips/ban', new BanIpMiddleware().action);
-router.post('/ips/unban', new UnbanIpMiddleware().action);
-router.get('/ips/banned', new GetBannedIpsMiddleware().action);
-router.get('/ips/filtered', new GetFilteredIpsMiddleware().action);
+router.get('/ips', new GetAllIpsMiddleware().handle);
+router.post('/ips/ban', new BanIpMiddleware().handle);
+router.post('/ips/unban', new UnbanIpMiddleware().handle);
+router.get('/ips/banned', new GetBannedIpsMiddleware().handle);
+router.get('/ips/filtered', new GetFilteredIpsMiddleware().handle);
 
 export { router };
