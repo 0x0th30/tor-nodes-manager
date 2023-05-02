@@ -1,7 +1,7 @@
 import { Error } from 'mongoose';
 import { BannedIpMock } from '@mocks/banned-ip';
 import { GetBannedIpsMock } from '@mocks/get-banned-ips';
-import { GetBannedIps, GetBannedIpsResponse } from '@use-cases/get-banned-ips';
+import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
 
 const GetBannedIpsSUT = new GetBannedIps();
 
@@ -16,7 +16,7 @@ describe('"GetBannedIps" class', () => {
       });
     });
     it('should return a successfully response if it can search by IPs', async () => {
-      const response: GetBannedIpsResponse = {
+      const response = {
         success: true,
         data: { addresses: ['4.4.4.4', '8.8.8.8'] },
       };
@@ -31,7 +31,7 @@ describe('"GetBannedIps" class', () => {
       });
     });
     it('should return a failure response if something fail during search', async () => {
-      const response: GetBannedIpsResponse = {
+      const response = {
         success: false,
         message: 'generic message here',
       };

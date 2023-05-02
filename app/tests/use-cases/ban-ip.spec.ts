@@ -1,5 +1,5 @@
 import { Error } from 'mongoose';
-import { BanIp, BanIpRequest, BanIpResponse } from '@use-cases/ban-ip';
+import { BanIp } from '@use-cases/ban-ip/ban-ip.business';
 import { BanIpMock } from '@mocks/ban-ip';
 import { BannedIpMock } from '@mocks/banned-ip';
 
@@ -8,7 +8,7 @@ const BanIpSUT = new BanIp();
 describe('"BanIp" class', () => {
   describe('(public) "execute" method', () => {
     it('should call "BannedIp.create" to include IP in database', async () => {
-      const request: BanIpRequest = { address: '8.8.8.8' };
+      const request = '8.8.8.8';
 
       BannedIpMock.create.mockResolvedValue(undefined as never);
 
@@ -17,8 +17,8 @@ describe('"BanIp" class', () => {
       });
     });
     it('should return a successfully response if IP was added in base', async () => {
-      const request: BanIpRequest = { address: '8.8.8.8' };
-      const response: BanIpResponse = { success: true, data: { address: '8.8.8.8' } };
+      const request = '8.8.8.8';
+      const response = { success: true, data: { address: '8.8.8.8' } };
 
       BannedIpMock.create.mockResolvedValue(undefined as never);
 
@@ -27,8 +27,8 @@ describe('"BanIp" class', () => {
       });
     });
     it('should return a failure response in case of something went wrong', async () => {
-      const request: BanIpRequest = { address: '8.8.8.8' };
-      const response: BanIpResponse = { success: false, message: 'generic message here' };
+      const request = '8.8.8.8';
+      const response = { success: false, message: 'generic message here' };
 
       BannedIpMock.create.mockImplementation(() => { throw new Error('foo bar'); });
       BanIpMock.generateSecureErrorMessage.mockReturnValue('generic message here');
