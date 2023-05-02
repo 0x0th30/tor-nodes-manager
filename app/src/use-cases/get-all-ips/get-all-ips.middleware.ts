@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
-import { Middleware, APIResponse } from '@contracts/middleware';
-import { GetAllIps, GetAllIpsResponse } from '@use-cases/get-all-ips';
+import { RedisClientType } from '@redis/client';
+import { Middleware } from '@contracts/middleware';
+import { GetAllIps } from '@use-cases/get-all-ips/get-all-ips.business';
 import { redisClient } from '@loaders/redis';
 import { RabbitMQ } from '@loaders/rabbitmq';
-import { logger } from '@loaders/logger';
-import { RedisClientType } from '@redis/client';
+import { logger } from '@utils/logger';
+import { GetAllIpsHTTPResponse } from './get-all-ips.d';
 
 class GetAllIpsMiddleware implements Middleware {
-  public async action(request: Request, response: Response) {
+  public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
-    const responseContent: APIResponse = { success: false };
+    const responseContent: GetAllIpsHTTPResponse = { success: false };
 
     const rabbitmqClient = new RabbitMQ();
 
@@ -18,7 +19,7 @@ class GetAllIpsMiddleware implements Middleware {
       rabbitmqClient,
     );
 
-    const getAllIpsResponse: GetAllIpsResponse = await getAllIps.execute();
+    const getAllIpsResponse = await getAllIps.execute();
 
     if (!getAllIpsResponse.success) {
       responseContent.success = false;

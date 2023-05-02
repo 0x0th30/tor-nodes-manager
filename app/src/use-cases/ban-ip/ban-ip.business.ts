@@ -1,41 +1,32 @@
 import { Error } from 'mongoose';
 import { BannedIp } from '@models/banned-ip';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
+import { BanIpDTO } from './ban-ip.d';
 
-interface UnbanIpRequest {
-  address: string,
-}
+export class BanIp {
+  public async execute(address: string): Promise<BanIpDTO> {
+    logger.info('Initializing "ban-ip" use-case/service...');
 
-interface UnbanIpResponse {
-  success: boolean,
-  message?: string,
-  data?: { address: string },
-}
+    const response: BanIpDTO = { success: false };
 
-class UnbanIp {
-  public async execute(request: UnbanIpRequest): Promise<UnbanIpResponse> {
-    logger.info('Initializing "unban-ip" use-case/service...');
-
-    const response: UnbanIpResponse = { success: false };
-
-    logger.info(`Removing IP ${request.address} from primary base...`);
+    logger.info(`Inserting IP ${address} in primary base...`);
 
     try {
-      await BannedIp.deleteMany({ address: request.address });
+      await BannedIp.create({ address });
       response.success = true;
-      response.data = { address: request.address };
+      response.data = { address };
 
-      logger.info('The IP was successfully removed.');
+      logger.info('The IP was successfully included.');
     } catch (error: any) {
       response.success = false;
       response.message = this.generateSecureErrorMessage(error);
     }
 
-    logger.info('Finishing "unban-ip" use-case/service.');
+    logger.info('Finishing "ban-ip" use-case/service.');
     return response;
   }
 
-  private generateSecureErrorMessage(error: Error) {
+  private generateSecureErrorMessage(error: Error): string {
     if (error instanceof Error.MongooseServerSelectionError) {
       logger.error(`Cannot connect with the specified URI. Details: ${error}`);
       return 'Database connection error, please report this issue!';
@@ -48,10 +39,13 @@ class UnbanIp {
       logger.error(`The specified model isn't registered. Details: ${error}`);
       return 'Database internal error, please report this issue!';
     }
+    // duplicate key error code
+    if (error.message.search('E11000') !== -1) {
+      logger.error('User was trying to insert an already existent IP');
+      return 'This IP it\'s already registered.';
+    }
 
     logger.error(`Failed by unknown error. Details: ${error}`);
     return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
-
-export { UnbanIp, UnbanIpRequest, UnbanIpResponse };

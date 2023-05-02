@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import { Middleware, APIResponse } from '@contracts/middleware';
-import { UnbanIp, UnbanIpRequest, UnbanIpResponse } from '@use-cases/unban-ip';
-import { logger } from '@loaders/logger';
+import { Middleware } from '@contracts/middleware';
+import { UnbanIp } from '@use-cases/unban-ip/unban-ip.business';
+import { logger } from '@utils/logger';
+import { UnbanIpHTTPResponse } from './unban-ip.d';
 
 class UnbanIpMiddleware implements Middleware {
-  public async action(request: Request, response: Response) {
+  public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
-    const responseContent: APIResponse = { success: false };
+    const responseContent: UnbanIpHTTPResponse = { success: false };
 
     logger.info('Checking request body...');
     if (!request.body.address) {
@@ -20,8 +21,7 @@ class UnbanIpMiddleware implements Middleware {
     const { address } = request.body;
 
     const unbanIp = new UnbanIp();
-    const unbanIpRequest: UnbanIpRequest = { address };
-    const unbanIpResponse: UnbanIpResponse = await unbanIp.execute(unbanIpRequest);
+    const unbanIpResponse = await unbanIp.execute(address);
 
     if (!unbanIpResponse.success) {
       responseContent.success = false;

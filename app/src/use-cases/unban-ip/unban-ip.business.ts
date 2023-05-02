@@ -1,40 +1,32 @@
 import { Error } from 'mongoose';
 import { BannedIp } from '@models/banned-ip';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
+import { UnbanIpDTO } from './unban-ip.d';
 
-interface GetBannedIpsResponse {
-  success: boolean,
-  message?: string,
-  data?: { addresses: string[] },
-}
+export class UnbanIp {
+  public async execute(address: string): Promise<UnbanIpDTO> {
+    logger.info('Initializing "unban-ip" use-case/service...');
 
-class GetBannedIps {
-  public async execute(): Promise<GetBannedIpsResponse> {
-    logger.info('Initializing "get-banned-ips" use-case/service...');
+    const response: UnbanIpDTO = { success: false };
 
-    const response: GetBannedIpsResponse = { success: false };
-
-    logger.info('Searching by IPs in primary base...');
+    logger.info(`Removing IP ${address} from primary base...`);
 
     try {
-      const bannedIps = await BannedIp.find({});
-      const addresses: string[] = [];
-      bannedIps.forEach((ip) => addresses.push(ip.address));
-
+      await BannedIp.deleteMany({ address });
       response.success = true;
-      response.data = { addresses };
+      response.data = { address };
 
-      logger.info('Banned IPs was successfully found.');
+      logger.info('The IP was successfully removed.');
     } catch (error: any) {
       response.success = false;
       response.message = this.generateSecureErrorMessage(error);
     }
 
-    logger.info('Finishing "get-banned-ips" use-cases/services.');
+    logger.info('Finishing "unban-ip" use-case/service.');
     return response;
   }
 
-  private generateSecureErrorMessage(error: Error): string {
+  private generateSecureErrorMessage(error: Error) {
     if (error instanceof Error.MongooseServerSelectionError) {
       logger.error(`Cannot connect with the specified URI. Details: ${error}`);
       return 'Database connection error, please report this issue!';
@@ -52,5 +44,3 @@ class GetBannedIps {
     return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
-
-export { GetBannedIps, GetBannedIpsResponse };

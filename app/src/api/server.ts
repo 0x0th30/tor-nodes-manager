@@ -1,6 +1,6 @@
 import express from 'express';
 import { router } from '@api/routes';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
 
 export class Server {
   private app = express();

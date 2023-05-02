@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import { RedisClientType } from '@redis/client';
-import { Middleware, APIResponse } from '@contracts/middleware';
-import { GetAllIps } from '@use-cases/get-all-ips';
-import { GetBannedIps } from '@use-cases/get-banned-ips';
-import { GetFilteredIps, GetFilteredIpsResponse } from '@use-cases/get-filtered-ips';
+import { Middleware } from '@contracts/middleware';
+import { GetAllIps } from '@use-cases/get-all-ips/get-all-ips.business';
+import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
+import { GetFilteredIps } from '@use-cases/get-filtered-ips/get-filtered-ips.business';
 import { redisClient } from '@loaders/redis';
 import { RabbitMQ } from '@loaders/rabbitmq';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
+import { GetFilteredIpsHTTPResponse } from './get-filtered-ips.d';
 
 class GetFilteredIpsMiddleware implements Middleware {
-  public async action(request: Request, response: Response) {
+  public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
-    const responseContent: APIResponse = { success: false };
+    const responseContent: GetFilteredIpsHTTPResponse = { success: false };
 
     const rabbitmqClient = new RabbitMQ();
 
@@ -22,7 +23,7 @@ class GetFilteredIpsMiddleware implements Middleware {
     const getBannedIps = new GetBannedIps();
 
     const getFilteredIps = new GetFilteredIps(getAllIps, getBannedIps);
-    const getFilteredIpsResponse: GetFilteredIpsResponse = await getFilteredIps.execute();
+    const getFilteredIpsResponse = await getFilteredIps.execute();
 
     if (!getFilteredIpsResponse.success || !getFilteredIpsResponse.data) {
       responseContent.success = false;

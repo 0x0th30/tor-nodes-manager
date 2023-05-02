@@ -1,37 +1,30 @@
 import { Error } from 'mongoose';
 import { BannedIp } from '@models/banned-ip';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
 
-interface BanIpRequest {
-  address: string,
-}
+export class GetBannedIps {
+  public async execute(): Promise<GetBannedIpsDTO> {
+    logger.info('Initializing "get-banned-ips" use-case/service...');
 
-interface BanIpResponse {
-  success: boolean,
-  message?: string,
-  data?: { address: string },
-}
+    const response: GetBannedIpsDTO = { success: false };
 
-class BanIp {
-  public async execute(request: BanIpRequest): Promise<BanIpResponse> {
-    logger.info('Initializing "ban-ip" use-case/service...');
-
-    const response: BanIpResponse = { success: false };
-
-    logger.info(`Inserting IP ${request.address} in primary base...`);
+    logger.info('Searching by IPs in primary base...');
 
     try {
-      await BannedIp.create({ address: request.address });
-      response.success = true;
-      response.data = { address: request.address };
+      const bannedIps = await BannedIp.find({});
+      const addresses: string[] = [];
+      bannedIps.forEach((ip) => addresses.push(ip.address));
 
-      logger.info('The IP was successfully included.');
+      response.success = true;
+      response.data = { addresses };
+
+      logger.info('Banned IPs was successfully found.');
     } catch (error: any) {
       response.success = false;
       response.message = this.generateSecureErrorMessage(error);
     }
 
-    logger.info('Finishing "ban-ip" use-case/service.');
+    logger.info('Finishing "get-banned-ips" use-cases/services.');
     return response;
   }
 
@@ -48,15 +41,8 @@ class BanIp {
       logger.error(`The specified model isn't registered. Details: ${error}`);
       return 'Database internal error, please report this issue!';
     }
-    // duplicate key error code
-    if (error.message.search('E11000') !== -1) {
-      logger.error('User was trying to insert an already existent IP');
-      return 'This IP it\'s already registered.';
-    }
 
     logger.error(`Failed by unknown error. Details: ${error}`);
     return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
-
-export { BanIp, BanIpRequest, BanIpResponse };

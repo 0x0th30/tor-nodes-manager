@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { Middleware, APIResponse } from '@contracts/middleware';
-import { GetBannedIps, GetBannedIpsResponse } from '@use-cases/get-banned-ips';
-import { logger } from '@loaders/logger';
+import { Middleware } from '@contracts/middleware';
+import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
+import { logger } from '@utils/logger';
 
 class GetBannedIpsMiddleware implements Middleware {
-  public async action(request: Request, response: Response) {
+  public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
-    const responseContent: APIResponse = { success: false };
+    const responseContent: GetBannedIpsHTTPResponse = { success: false };
 
     const getBannedIps = new GetBannedIps();
-    const getBannedIpsResponse: GetBannedIpsResponse = await getBannedIps.execute();
+    const getBannedIpsResponse = await getBannedIps.execute();
 
     if (!getBannedIpsResponse.success) {
       responseContent.success = false;
@@ -20,7 +20,9 @@ class GetBannedIpsMiddleware implements Middleware {
     }
 
     responseContent.success = true;
-    responseContent.data = { bannedIps: getBannedIpsResponse.data?.addresses };
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+    responseContent.data = { bannedIps: getBannedIpsResponse.data?.addresses! };
 
     logger.info('Request was successfully responded. Returning status code 200!');
     return response.status(200).json(responseContent);

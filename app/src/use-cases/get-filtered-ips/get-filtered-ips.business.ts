@@ -1,18 +1,9 @@
-import { GetAllIps } from '@use-cases/get-all-ips';
-import { GetBannedIps } from '@use-cases/get-banned-ips';
-import { logger } from '@loaders/logger';
+import { GetAllIps } from '@use-cases/get-all-ips/get-all-ips.business';
+import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
+import { logger } from '@utils/logger';
+import { GetFilteredIpsDTO } from './get-filtered-ips.d';
 
-interface GetFilteredIpsResponse {
-  success: boolean,
-  message?: string,
-  data?: {
-    results: number,
-    bannedIps: number,
-    addresses: string[],
-  },
-}
-
-class GetFilteredIps {
+export class GetFilteredIps {
   private getAllIps: GetAllIps;
 
   private getBannedIps: GetBannedIps;
@@ -22,10 +13,10 @@ class GetFilteredIps {
     this.getBannedIps = getBannedIps;
   }
 
-  public async execute(): Promise<GetFilteredIpsResponse> {
+  public async execute(): Promise<GetFilteredIpsDTO> {
     logger.info('Initializing "get-filtered-ips" use-case/service...');
 
-    const response: GetFilteredIpsResponse = { success: false };
+    const response: GetFilteredIpsDTO = { success: false };
 
     logger.info('Getting all IPs...');
     const getAllIpsResponse = await this.getAllIps.execute();
@@ -68,5 +59,3 @@ class GetFilteredIps {
     return response;
   }
 }
-
-export { GetFilteredIps, GetFilteredIpsResponse };

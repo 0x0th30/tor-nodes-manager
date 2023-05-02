@@ -32,19 +32,16 @@
     "baseUrl": ".",
     "paths": {
       "@api/*": ["src/api/*"],
-      "@providers/*": ["src/providers/*"],
-      "@middlewares/*": ["src/api/middlewares/*"],
-      "@routes/*": ["src/api/routes/*"],
-      "@config/*": ["src/config/*"],
-      "@loaders/*": ["src/loaders/*"],
       "@models/*": ["src/models/*"],
+      "@providers/*": ["src/providers/*"],
       "@use-cases/*": ["src/use-cases/*"],
-      "@contracts/*": ["src/contracts/*"],
-      "@entities/*": ["src/contracts/*"],
-      "@errors/*": ["src/errors/*"],
-      "@types/*": ["src/types/*"],
+      "@types/*": ["src/common/types/*"],
+      "@utils/*": ["src/common/utils/*"],
+      "@errors/*": ["src/common/errors/*"],
+      "@loaders/*": ["src/common/loaders/*"],
+      "@contracts/*": ["src/common/contracts/*"],
+      "@entities/*": ["src/common/contracts/*"],
       "@mocks/*": ["tests/mocks/*"],
-      "@utils/*": ["src/utils/*"]
     }
   },
   "include": [

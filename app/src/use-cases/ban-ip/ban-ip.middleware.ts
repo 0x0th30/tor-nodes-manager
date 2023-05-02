@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import { Middleware, APIResponse } from '@contracts/middleware';
-import { BanIp, BanIpRequest, BanIpResponse } from '@use-cases/ban-ip';
-import { logger } from '@loaders/logger';
+import { Middleware } from '@contracts/middleware';
+import { BanIp } from '@use-cases/ban-ip/ban-ip.business';
+import { logger } from '@utils/logger';
+import { BanIpHTTPResponse } from './ban-ip.d';
 
-class BanIpMiddleware implements Middleware {
-  public async action(request: Request, response: Response) {
+export class BanIpMiddleware implements Middleware {
+  public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
-    const responseContent: APIResponse = { success: false };
+    const responseContent: BanIpHTTPResponse = { success: false };
 
     logger.info('Checking request body...');
     if (!request.body.address) {
@@ -20,8 +21,7 @@ class BanIpMiddleware implements Middleware {
     const { address } = request.body;
 
     const banIp = new BanIp();
-    const banIpRequest: BanIpRequest = { address };
-    const banIpResponse: BanIpResponse = await banIp.execute(banIpRequest);
+    const banIpResponse = await banIp.execute(address);
 
     if (!banIpResponse.success) {
       responseContent.success = false;
@@ -38,5 +38,3 @@ class BanIpMiddleware implements Middleware {
     return response.status(201).json(responseContent);
   }
 }
-
-export { BanIpMiddleware };

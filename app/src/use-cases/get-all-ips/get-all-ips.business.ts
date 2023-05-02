@@ -1,28 +1,20 @@
 import { RedisClientType } from '@redis/client';
 import { RabbitMQ } from '@loaders/rabbitmq';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
 import { InvalidResponseFromSource, NodeListSourceError, NoResponseFromSource }
   from '@errors/node-list-source-error';
+import { GetAllIpsDTO } from './get-all-ips.d';
 
-interface GetAllIpsResponse {
-  success: boolean,
-  message?: string,
-  data?: {
-    results: number,
-    addresses: string[],
-  },
-}
-
-class GetAllIps {
+export class GetAllIps {
   constructor(
     private redis: RedisClientType<any>,
     private rabbitmq: RabbitMQ,
   ) {}
 
-  public async execute(): Promise<GetAllIpsResponse> {
+  public async execute(): Promise<GetAllIpsDTO> {
     logger.info('Initializing "get-all-ips" use-case/service...');
 
-    const response: GetAllIpsResponse = { success: false };
+    const response: GetAllIpsDTO = { success: false };
 
     try {
       response.data = { results: 0, addresses: [] };
@@ -73,5 +65,3 @@ class GetAllIps {
     return 'An internal/unknown error was throwed, please report this issue!';
   }
 }
-
-export { GetAllIps, GetAllIpsResponse };
