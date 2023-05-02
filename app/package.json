@@ -43,8 +43,8 @@
     "test": "jest --verbose",
     "test:silent": "jest --silent --verbose",
     "start:prisma": "prisma generate && prisma migrate deploy",
-    "start:dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
-    "start:prod": "node dist/app.js",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register src/main.ts",
+    "start:prod": "node dist/main.js",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored"
   },
   "version": "0.0.0",
