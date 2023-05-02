@@ -1,6 +1,7 @@
 import { Error } from 'mongoose';
 import { BannedIp } from '@models/banned-ip';
 import { logger } from '@utils/logger';
+import { GetBannedIpsDTO } from './get-banned-ips.d';
 
 export class GetBannedIps {
   public async execute(): Promise<GetBannedIpsDTO> {

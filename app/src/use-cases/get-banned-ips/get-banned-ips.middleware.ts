@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Middleware } from '@contracts/middleware';
 import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
 import { logger } from '@utils/logger';
+import { GetBannedIpsHTTPResponse } from './get-banned-ips.d';
 
 class GetBannedIpsMiddleware implements Middleware {
   public async handle(request: Request, response: Response) {

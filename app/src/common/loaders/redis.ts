@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
 
 const TIMEOUT_IN_MS = 5000;
 

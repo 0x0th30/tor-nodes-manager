@@ -1,10 +1,10 @@
-interface GetBannedIpsDTO {
+export interface GetBannedIpsDTO {
   success: boolean,
   message?: string,
   data?: { addresses: string[] },
 }
 
-interface GetBannedIpsHTTPResponse {
+export interface GetBannedIpsHTTPResponse {
   success: boolean,
   message?: string,
   data?: { bannedIps: string[] },

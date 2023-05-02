@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { logger } from '@loaders/logger';
+import { logger } from '@utils/logger';
 
 const uri = process.env['MONGO_URI'] || 'mongodb://localhost:27017/ips';
 
