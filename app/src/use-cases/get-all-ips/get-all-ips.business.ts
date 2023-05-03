@@ -16,16 +16,15 @@ export class GetAllIps {
 
     const response: GetAllIpsDTO = { success: false };
 
-    try {
-      response.data = { results: 0, addresses: [] };
-
-      response.success = true;
-      response.data.addresses = await this.getTorNodes();
-      response.data.results = response.data.addresses.length;
-    } catch (error: any) {
-      response.success = false;
-      response.message = this.generateSecureErrorMessage(error);
-    }
+    await this.getTorNodes()
+      .then((addresses) => {
+        response.success = true;
+        response.data = { addresses, results: addresses.length };
+      })
+      .catch((error) => {
+        response.success = false;
+        response.error = error;
+      });
 
     logger.info('Finishing "get-all-ips" use-case/service.');
     return response;

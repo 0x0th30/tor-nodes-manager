@@ -10,17 +10,17 @@ export class BanIp {
     const response: BanIpDTO = { success: false };
 
     logger.info(`Inserting IP ${address} in primary base...`);
-
-    try {
-      await BannedIp.create({ address });
-      response.success = true;
-      response.data = { address };
-
-      logger.info('The IP was successfully included.');
-    } catch (error: any) {
-      response.success = false;
-      response.message = this.generateSecureErrorMessage(error);
-    }
+    await BannedIp.create({ address })
+      .then((insertion) => {
+        logger.info('The IP was successfully included.');
+        response.success = true;
+        response.data = { address: insertion.address };
+      })
+      .catch((error) => {
+        logger.error(`IP insertion was failed. Details: ${error}`);
+        response.success = false;
+        response.error = error;
+      });
 
     logger.info('Finishing "ban-ip" use-case/service.');
     return response;

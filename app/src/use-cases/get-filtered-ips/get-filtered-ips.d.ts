@@ -1,6 +1,6 @@
 export interface GetFilteredIpsDTO {
   success: boolean,
-  message?: string,
+  error?: Error,
   data?: {
     results: number,
     bannedIps: number,

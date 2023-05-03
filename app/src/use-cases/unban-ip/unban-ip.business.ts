@@ -10,17 +10,17 @@ export class UnbanIp {
     const response: UnbanIpDTO = { success: false };
 
     logger.info(`Removing IP ${address} from primary base...`);
-
-    try {
-      await BannedIp.deleteMany({ address });
-      response.success = true;
-      response.data = { address };
-
-      logger.info('The IP was successfully removed.');
-    } catch (error: any) {
-      response.success = false;
-      response.message = this.generateSecureErrorMessage(error);
-    }
+    await BannedIp.deleteMany({ address })
+      .then(() => {
+        logger.info('IP was successfully removed from primary base.');
+        response.success = true;
+        response.data = { address };
+      })
+      .catch((error) => {
+        logger.error(`Cannot remove IP from primary base. Details: ${error}`);
+        response.success = false;
+        response.error = error;
+      });
 
     logger.info('Finishing "unban-ip" use-case/service.');
     return response;

@@ -10,20 +10,20 @@ export class GetBannedIps {
     const response: GetBannedIpsDTO = { success: false };
 
     logger.info('Searching by IPs in primary base...');
+    await BannedIp.find({})
+      .then((values) => {
+        logger.info('Banned IPs was successfully found in primary base.');
+        const addresses: string[] = [];
+        values.forEach((result) => addresses.push(result.address));
 
-    try {
-      const bannedIps = await BannedIp.find({});
-      const addresses: string[] = [];
-      bannedIps.forEach((ip) => addresses.push(ip.address));
-
-      response.success = true;
-      response.data = { addresses };
-
-      logger.info('Banned IPs was successfully found.');
-    } catch (error: any) {
-      response.success = false;
-      response.message = this.generateSecureErrorMessage(error);
-    }
+        response.success = true;
+        response.data = { addresses };
+      })
+      .catch((error) => {
+        logger.error(`Cannot found banned IPs. Details ${error}`);
+        response.success = false;
+        response.error = error;
+      });
 
     logger.info('Finishing "get-banned-ips" use-cases/services.');
     return response;

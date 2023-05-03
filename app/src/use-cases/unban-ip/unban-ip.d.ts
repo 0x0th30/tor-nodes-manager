@@ -1,6 +1,6 @@
 export interface UnbanIpDTO {
   success: boolean,
-  message?: string,
+  error?: Error,
   data?: { address: string },
 }
 

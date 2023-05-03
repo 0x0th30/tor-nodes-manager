@@ -4,14 +4,10 @@ import { logger } from '@utils/logger';
 import { GetFilteredIpsDTO } from './get-filtered-ips.d';
 
 export class GetFilteredIps {
-  private getAllIps: GetAllIps;
-
-  private getBannedIps: GetBannedIps;
-
-  constructor(getAllIps: GetAllIps, getBannedIps: GetBannedIps) {
-    this.getAllIps = getAllIps;
-    this.getBannedIps = getBannedIps;
-  }
+  constructor(
+    private GetAllIpsBusiness: GetAllIps,
+    private GetBannedIpsBusiness: GetBannedIps,
+  ) {}
 
   public async execute(): Promise<GetFilteredIpsDTO> {
     logger.info('Initializing "get-filtered-ips" use-case/service...');
@@ -19,19 +15,19 @@ export class GetFilteredIps {
     const response: GetFilteredIpsDTO = { success: false };
 
     logger.info('Getting all IPs...');
-    const getAllIpsResponse = await this.getAllIps.execute();
+    const getAllIpsResponse = await this.GetAllIpsBusiness.execute();
     if (!getAllIpsResponse.success || !getAllIpsResponse.data) {
       response.success = false;
-      response.message = getAllIpsResponse.message;
+      response.error = getAllIpsResponse.error;
 
       return response;
     }
 
     logger.info('Getting banned IPs...');
-    const getBannedIpsResponse = await this.getBannedIps.execute();
+    const getBannedIpsResponse = await this.GetBannedIpsBusiness.execute();
     if (!getBannedIpsResponse.success || !getBannedIpsResponse.data) {
       response.success = false;
-      response.message = getBannedIpsResponse.message;
+      response.error = getBannedIpsResponse.error;
 
       return response;
     }

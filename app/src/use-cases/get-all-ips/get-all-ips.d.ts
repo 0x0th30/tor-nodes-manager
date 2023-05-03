@@ -1,6 +1,6 @@
 export interface GetAllIpsDTO {
   success: boolean,
-  message?: string,
+  error?: Error,
   data?: {
     results: number,
     addresses: string[],

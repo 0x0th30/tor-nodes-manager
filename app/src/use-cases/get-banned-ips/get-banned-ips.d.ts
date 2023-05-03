@@ -1,6 +1,6 @@
 export interface GetBannedIpsDTO {
   success: boolean,
-  message?: string,
+  error?: Error,
   data?: { addresses: string[] },
 }
 

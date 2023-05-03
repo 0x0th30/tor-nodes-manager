@@ -1,6 +1,6 @@
 export interface BanIpDTO {
   success: boolean,
-  message?: string,
+  error?: Error,
   data?: { address: string },
 }
 
