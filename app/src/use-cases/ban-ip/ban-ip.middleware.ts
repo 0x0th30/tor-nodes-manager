@@ -3,6 +3,8 @@ import { Middleware } from '@contracts/middleware';
 import { BanIp } from '@use-cases/ban-ip/ban-ip.business';
 import { BanIpHTTPResponse } from './ban-ip.d';
 
+const BanIpBusiness = new BanIp();
+
 export class BanIpMiddleware implements Middleware {
   public async handle(request: Request, response: Response) {
     const responseContent: BanIpHTTPResponse = { success: false };
@@ -14,18 +16,22 @@ export class BanIpMiddleware implements Middleware {
       return response.status(400).json(responseContent);
     }
 
-    const banIp = new BanIp();
-    const banIpResponse = await banIp.execute(address);
+    const banIpResponse = await BanIpBusiness.execute(address);
 
-    if (!banIpResponse.success) {
-      responseContent.success = false;
-      responseContent.message = banIpResponse.message;
-      return response.status(500).json(responseContent);
+    if (banIpResponse.success && banIpResponse.data) {
+      responseContent.success = true;
+      responseContent.data = { bannedIp: banIpResponse.data.address };
+      return response.status(201).json(responseContent);
     }
 
-    responseContent.success = true;
-    responseContent.data = { bannedIp: address };
+    if (banIpResponse.error?.message.search('E11000') !== -1) {
+      responseContent.success = false;
+      responseContent.message = `IP "${address}" already exists in base!`;
+      return response.status(403).json(responseContent);
+    }
 
-    return response.status(201).json(responseContent);
+    responseContent.success = false;
+    responseContent.message = 'Internal/unknown error occurred, report this issue!';
+    return response.status(500).json(responseContent);
   }
 }
