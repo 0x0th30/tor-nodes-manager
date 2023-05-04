@@ -4,7 +4,6 @@ import { Middleware } from '@contracts/middleware';
 import { GetAllIps } from '@use-cases/get-all-ips/get-all-ips.business';
 import { redisClient } from '@loaders/redis';
 import { RabbitMQ } from '@loaders/rabbitmq';
-import { logger } from '@utils/logger';
 import { GetAllIpsHTTPResponse } from './get-all-ips.d';
 
 const RabbitMQClient = new RabbitMQ();
@@ -14,8 +13,7 @@ const GetAllIpsBusiness = new GetAllIps(
 );
 
 class GetAllIpsMiddleware implements Middleware {
-  public async handle(request: Request, response: Response) {
-    logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
+  public async handle(_request: Request, response: Response) {
     const responseContent: GetAllIpsHTTPResponse = { success: false };
 
     const getAllIpsResponse = await GetAllIpsBusiness.execute();

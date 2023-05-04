@@ -10,7 +10,7 @@ export class BanIpMiddleware implements Middleware {
     const responseContent: BanIpHTTPResponse = { success: false };
 
     const { address } = request.body;
-    if (address) {
+    if (!address) {
       responseContent.success = false;
       responseContent.message = 'Missing "address" field in request body!';
       return response.status(400).json(responseContent);

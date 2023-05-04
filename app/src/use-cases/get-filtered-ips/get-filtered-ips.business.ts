@@ -19,7 +19,6 @@ export class GetFilteredIps {
     if (!getAllIpsResponse.success || !getAllIpsResponse.data) {
       response.success = false;
       response.error = getAllIpsResponse.error;
-
       return response;
     }
 
@@ -28,7 +27,6 @@ export class GetFilteredIps {
     if (!getBannedIpsResponse.success || !getBannedIpsResponse.data) {
       response.success = false;
       response.error = getBannedIpsResponse.error;
-
       return response;
     }
 

@@ -21,6 +21,8 @@ services:
   mongodb:
     container_name: tor-nodes-manager-mongodb
     image: mongo
+    ports:
+      - 27017:27017
 
   redis:
     container_name: tor-nodes-manager-redis
