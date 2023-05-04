@@ -7,34 +7,31 @@ import { RabbitMQ } from '@loaders/rabbitmq';
 import { logger } from '@utils/logger';
 import { GetAllIpsHTTPResponse } from './get-all-ips.d';
 
+const RabbitMQClient = new RabbitMQ();
+const GetAllIpsBusiness = new GetAllIps(
+  redisClient as RedisClientType,
+  RabbitMQClient,
+);
+
 class GetAllIpsMiddleware implements Middleware {
   public async handle(request: Request, response: Response) {
     logger.info(`Received request on "${request.path}" from "${request.ip}"...`);
     const responseContent: GetAllIpsHTTPResponse = { success: false };
 
-    const rabbitmqClient = new RabbitMQ();
+    const getAllIpsResponse = await GetAllIpsBusiness.execute();
 
-    const getAllIps = new GetAllIps(
-      redisClient as RedisClientType,
-      rabbitmqClient,
-    );
-
-    const getAllIpsResponse = await getAllIps.execute();
-
-    if (!getAllIpsResponse.success) {
-      responseContent.success = false;
-      responseContent.message = getAllIpsResponse.message;
-
-      logger.error('Internal Server Error. Returning status code 500!');
-      return response.status(500).json(responseContent);
+    if (getAllIpsResponse.success && getAllIpsResponse.data) {
+      responseContent.success = true;
+      responseContent.data = {
+        results: getAllIpsResponse.data.results,
+        addresses: getAllIpsResponse.data.addresses,
+      };
+      return response.status(200).json(responseContent);
     }
 
-    responseContent.success = true;
-    responseContent.data = getAllIpsResponse.data;
-    if (getAllIpsResponse.message) responseContent.message = getAllIpsResponse.message;
-
-    logger.info('Request was successfully responded. Returning status code 200!');
-    return response.status(200).json(responseContent);
+    responseContent.success = false;
+    responseContent.message = 'Internal/unknown error occurred, report this issue!';
+    return response.status(500).json(responseContent);
   }
 }
 
