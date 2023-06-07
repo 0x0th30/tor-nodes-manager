@@ -1,6 +1,7 @@
 import { RedisClientType } from '@redis/client';
 import { RabbitMQ } from '@loaders/rabbitmq';
 import { logger } from '@utils/logger';
+import { ProcessingNodeList } from '@errors/node-list-source-error';
 import { GetAllIpsDTO } from './get-all-ips.d';
 
 export class GetAllIps {
@@ -36,15 +37,15 @@ export class GetAllIps {
     const queue = 'tornodes';
     const queueSize = await this.RabbitMQClient.getQueueSize(queue);
 
-    if (queueSize > 0) return this.getTorNodes();
     if (tornodes && tornodesTTL > minimumTTLToUpdateCache) return tornodes;
-    if (tornodes && tornodesTTL <= minimumTTLToUpdateCache && queueSize === 0) {
+    if (
+      (tornodes && tornodesTTL <= minimumTTLToUpdateCache && queueSize === 0)
+      || (!tornodes && queueSize === 0)
+    ) {
       const message = { getOnionooIps: true, getDanMeUkIps: true };
-      this.RabbitMQClient.sendMessageToQueue(queue, message);
-
-      return tornodes;
+      await this.RabbitMQClient.sendMessageToQueue(queue, message);
     }
 
-    return this.getTorNodes();
+    throw new ProcessingNodeList();
   }
 }
