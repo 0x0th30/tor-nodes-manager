@@ -4,9 +4,7 @@ const danMeUkAPI = require('./providers/dan-me-uk');
 const redis = require('./providers/redis');
 
 const queue = 'tornodes'
-// const uri = process.env['RABBITMQ_URI'];
-const uri = 'amqp://user:password@localhost:5672';
-console.log(uri);
+const uri = process.env['RABBITMQ_URI'];
 
 amqp.connect(uri, (connectionError, connection) => {
   if (connectionError) throw connectionError;
@@ -14,6 +12,7 @@ amqp.connect(uri, (connectionError, connection) => {
   connection.createChannel((channelError, channel) => {
     if (channelError) throw channelError;
 
+    channel.assertQueue(queue, { durable: false });
     channel.consume(queue, async (message) => {
       console.log('dentro da queue');
       const tornodes = [];
