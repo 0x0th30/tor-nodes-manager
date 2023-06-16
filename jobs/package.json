@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start:dev": "ts-node-dev -r tsconfig-paths/register src/process-tornodes-message.ts",
-    "start:prod": "node dist/process-tornodes-message.js",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register src/main.ts",
+    "start:prod": "node dist/main.js",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored"
   },
   "dependencies": {

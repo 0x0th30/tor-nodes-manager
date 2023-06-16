@@ -28,6 +28,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@workers/*": ["src/workers/*"],
       "@providers/*": ["src/providers/*"],
       "@utils/*": ["src/utils/*"],
     },
