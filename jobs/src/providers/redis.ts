@@ -1,9 +1,8 @@
-const { createClient } = require('redis');
+import { createClient } from 'redis';
 
 const TIMEOUT_IN_MS = 5000;
 
-// const url = process.env['REDIS_URI'];
-const url = 'redis://default:password@localhost:6379'
+const url = process.env['REDIS_URI'];
 const redisClient = createClient({
   url,
   socket: { reconnectStrategy: TIMEOUT_IN_MS },
@@ -19,4 +18,4 @@ redisClient.on('error', (error) => {
     + ` Trying again in ${TIMEOUT_IN_MS}ms...`);
 });
 
-module.exports = redisClient;
+export { redisClient };
