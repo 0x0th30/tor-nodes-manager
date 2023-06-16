@@ -6,5 +6,7 @@
 !app/package.json
 !app/babel.config.js
 
+!jobs/src/
+!jobs/tsconfig.json
 !jobs/package.json
-!jobs/src
+!jobs/babel.config.js

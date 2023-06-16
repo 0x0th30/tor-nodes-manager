@@ -30,7 +30,7 @@
     "paths": {
       "@providers/*": ["src/providers/*"],
       "@utils/*": ["src/utils/*"],
-    }
+    },
   },
   "include": [
     "src/**/*.ts",

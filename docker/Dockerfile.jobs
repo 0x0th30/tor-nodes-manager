@@ -6,4 +6,4 @@ COPY jobs .
 
 RUN yarn install
 
-CMD [ "node",  "src/process-tornodes-message.js" ]
+CMD [ "yarn",  "start:dev" ]
