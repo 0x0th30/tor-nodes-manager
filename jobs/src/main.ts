@@ -1,4 +1,4 @@
-import { TornodesProcessor } from '@workers/process-tornodes-message';
+import { TornodesProcessor } from '@workers/tornodes-processor';
 
 const tornodesWorker = new TornodesProcessor();
 
