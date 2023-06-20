@@ -5,20 +5,24 @@ import { redisClient } from '@providers/redis';
 import { logger } from '@utils/logger';
 
 export class TornodesProcessor {
+  private TIMEOUT_IN_MS = 5000;
   private queueName = 'tornodes'
   private rabbitmqURI = process.env['RABBITMQ_URI']!;
   private DanMeProvider = new DanMeAPI();
   private OnionooProvider = new OnionooAPI();
 
-  public start(): void {    
+  public async start(): Promise<void> {
     logger.info('Connecting into RabbitMQ client...');
-    amqp.connect(this.rabbitmqURI, (connectionError, connection) => {
+    amqp.connect(this.rabbitmqURI, async (connectionError, connection) => {
       if (connectionError) {
-        logger.error(`Cannot connect RabbitMQ client. Details: "${connectionError}"`);
+        logger.error('Cannot connect RabbitMQ client, trying again in '
+          + `${this.TIMEOUT_IN_MS}ms.... Details: "${connectionError}"`);
+        await new Promise((resolve) => setTimeout(resolve, this.TIMEOUT_IN_MS));
         return this.start();
       }
       
-      logger.info('Successfully connected with RabbitMQ client. Creating channel...');
+      logger.info('RabbitMQ client connection was successfully established!'
+        + ' Creating channel...');
       connection.createChannel((channelError, channel) => {
         if (channelError) {
           logger.error(`Cannot create channel. Details: "${connectionError}"`);
