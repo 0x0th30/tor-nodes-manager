@@ -9,8 +9,7 @@ export class OnionooAPI {
     this.axios = axios.create({ baseURL });
   }
 
-  public async getNodeList() {
-    console.log('Starting to get node list from Onionoo API...');
+  public async getNodeList(): Promise<Array<string>> {
     const nodeList: Array<string> = [];
 
     const path = '/summary?limit=5000';
@@ -27,16 +26,12 @@ export class OnionooAPI {
       .catch((error) => {
         if (error.response) {
           logger.error(`Received status code ${error.response.status}.`);
-          throw error;
         } else if (error.request) {
           logger.error(`Not received response. Details: ${error.code}`);
-          throw error;
         } else if (error instanceof AxiosError) {
           logger.error(`Request wasn't performed. Details: ${error}`);
-          throw error;
         } else {
           logger.error(`Failed by unknown reasons. Details: ${error}`);
-          throw error;
         }
       });
 

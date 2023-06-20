@@ -26,16 +26,12 @@ export class DanMeAPI {
       .catch((error) => {
         if (error.response) {
           logger.error(`Received status code ${error.response.status}.`);
-          throw error;
         } else if (error.request) {
           logger.error(`Not received response. Details: ${error.code}`);
-          throw error;
         } else if (error instanceof AxiosError) {
           logger.error(`Request wasn't performed. Details: ${error}`);
-          throw error;
         } else {
           logger.error(`Failed by unknown reasons. Details: ${error}`);
-          throw error;
         }
       });
 

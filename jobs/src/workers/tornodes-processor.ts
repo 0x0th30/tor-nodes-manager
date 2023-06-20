@@ -35,15 +35,16 @@ export class TornodesProcessor {
           logger.info(`Successfully connected with "${this.queueName}" queue.`);
           const tornodes: Array<string> = [];
           const jsonfiedMessage = JSON.parse(message!.content.toString());
-          console.log(jsonfiedMessage)
     
+          logger.info('Getting Onionoo IPs...');
           if (jsonfiedMessage.getOnionooIps) {
             await this.OnionooProvider.getNodeList()
               .then((nodeList) => {
                 nodeList.forEach((nodeIp) => tornodes.push(nodeIp));
               });
           }
-    
+
+          logger.info('Getting Dan Me Uk IPs...');
           if (jsonfiedMessage.getDanMeUkIps) {
             await this.DanMeProvider.getNodeList()
               .then((nodeList) => {
