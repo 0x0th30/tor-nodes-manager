@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+import { logger } from '@utils/logger';
 
 const TIMEOUT_IN_MS = 5000;
 
@@ -10,11 +11,11 @@ const redisClient = createClient({
 redisClient.connect();
 
 redisClient.on('ready', () => {
-  console.log('Redis connection was successfully established!');
+  logger.info('Redis connection was successfully established!');
 });
 
 redisClient.on('error', (error) => {
-  console.log(`Redis connection has been failed: ${error}.`
+  logger.error(`Redis connection has been failed: ${error}.`
     + ` Trying again in ${TIMEOUT_IN_MS}ms...`);
 });
 
