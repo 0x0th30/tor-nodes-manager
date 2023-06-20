@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "d9c8409c-4aab-4a4a-b641-d262059f6657",
-		"name": "main",
+		"name": "tor nodes manager",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "16421189"
 	},
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"address\": \"8.8.8.8\"\n}",
+					"raw": "{\n    \"address\": \"104.53.221.159\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"address\": \"8.8.8.8\"\n}",
+					"raw": "{\n    \"address\": \"127.0.0.1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
