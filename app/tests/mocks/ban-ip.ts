@@ -1,7 +1,5 @@
-import { BanIp } from '@use-cases/ban-ip';
+import { BanIp } from '@use-cases/ban-ip/ban-ip.business';
 
 export const BanIpMock = {
   execute: jest.spyOn(BanIp.prototype, 'execute'),
-  generateSecureErrorMessage: jest
-    .spyOn((BanIp as any).prototype, 'generateSecureErrorMessage'),
 };
