@@ -1,6 +1,5 @@
 import { Error } from 'mongoose';
 import { BannedIpMock } from '@mocks/banned-ip';
-import { GetBannedIpsMock } from '@mocks/get-banned-ips';
 import { GetBannedIps } from '@use-cases/get-banned-ips/get-banned-ips.business';
 
 const GetBannedIpsSUT = new GetBannedIps();
@@ -33,39 +32,13 @@ describe('"GetBannedIps" class', () => {
     it('should return a failure response if something fail during search', async () => {
       const response = {
         success: false,
-        message: 'generic message here',
+        error: new Error('foo bar'),
       };
 
-      BannedIpMock.find.mockImplementation(() => { throw new Error('foo bar'); });
-      GetBannedIpsMock.generateSecureErrorMessage.mockReturnValue('generic message here');
+      BannedIpMock.find.mockRejectedValue(new Error('foo bar'));
 
       await GetBannedIpsSUT.execute().then((value) => {
         expect(value).toEqual(response);
-      });
-    });
-    describe('(private) "generateSecureErrorMessage" method', () => {
-      it('should return message according throwed error', async () => {
-        GetBannedIpsMock.generateSecureErrorMessage.mockRestore();
-
-        let error;
-        let expectedMessage: string;
-        let generatedMessage: string;
-
-        error = new Error.MongooseServerSelectionError('foo bar');
-        expectedMessage = 'Database connection error, please report this issue!';
-        generatedMessage = (GetBannedIpsSUT as any).generateSecureErrorMessage(error);
-        expect(generatedMessage).toEqual(expectedMessage);
-
-        error = new Error.DocumentNotFoundError('foo bar');
-        expectedMessage = 'Database internal error, please report this issue!';
-        generatedMessage = (GetBannedIpsSUT as any).generateSecureErrorMessage(error);
-        expect(generatedMessage).toEqual(expectedMessage);
-
-        error = new Error('foo bar');
-        expectedMessage = 'An internal/unknown error was throwed, please report'
-          + ' this issue!';
-        generatedMessage = (GetBannedIpsSUT as any).generateSecureErrorMessage(error);
-        expect(generatedMessage).toEqual(expectedMessage);
       });
     });
   });
