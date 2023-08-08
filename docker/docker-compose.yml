@@ -21,24 +21,18 @@ services:
   mongodb:
     container_name: tor-nodes-manager-mongodb
     image: mongo
-    ports:
-      - 27017:27017
 
   redis:
     container_name: tor-nodes-manager-redis
     image: redis
     env_file:
       - ../config/redis.env
-    ports:
-      - 6379:6379
 
   rabbitmq:
     container_name: tor-nodes-manager-rabbitmq
     image: rabbitmq
     env_file:
       - ../config/rabbitmq.env
-    ports:
-      - 5672:5672
 
   jobs:
     container_name: tor-nodes-manager-jobs
